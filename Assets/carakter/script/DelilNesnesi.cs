@@ -23,7 +23,15 @@ public class DelilNesnesi : MonoBehaviour
         if (toplamaSesi != null)
             AudioSource.PlayClipAtPoint(toplamaSesi, transform.position);
 
+        // Genel delil yöneticisine bildiriliyor
         DelilYoneticisi.Instance.DelilBulundu(delilAdi);
+
+        // ADIM 7: Not defteri yöneticisine delil ekleniyor
+        if (NotDefteriYoneticisi.Instance != null)
+        {
+            NotDefteriYoneticisi.Instance.DelilEkle(delilAdi);
+        }
+
         gameObject.SetActive(false);
     }
 }
