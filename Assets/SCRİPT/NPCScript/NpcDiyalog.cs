@@ -1,5 +1,4 @@
 using UnityEngine;
-using TMPro;
 using System.Collections;
 
 public class NpcDiyalog : MonoBehaviour
@@ -32,36 +31,32 @@ public class NpcDiyalog : MonoBehaviour
 
     public string GetAd() { return npcAdi; }
     public bool KonusuyorMu() { return konusuyor; }
-    public bool OyuncuYakindaMi() { return oyuncuYakinda; }
     public void OyuncuYaklasti() { oyuncuYakinda = true; }
     public void OyuncuUzaklasti()
     {
         oyuncuYakinda = false;
         konusuyor = false;
+        if(audioSource != null) audioSource.Stop();
     }
 
     string[] MevcutKonusmalariGetir()
     {
+        if (DelilYoneticisi.Instance == null) return asama1Konusmalar;
         int delilSayisi = DelilYoneticisi.Instance.BulunanDelilSayisiniGetir();
 
-        if (delilSayisi <= 1)
-            return asama1Konusmalar;
-        else if (delilSayisi <= 3)
-            return asama2Konusmalar;
-        else
-            return asama3Konusmalar;
+        if (delilSayisi <= 1) return asama1Konusmalar;
+        else if (delilSayisi <= 3) return asama2Konusmalar;
+        else return asama3Konusmalar;
     }
 
     AudioClip[] MevcutSesleriGetir()
     {
+        if (DelilYoneticisi.Instance == null) return asama1Sesleri;
         int delilSayisi = DelilYoneticisi.Instance.BulunanDelilSayisiniGetir();
 
-        if (delilSayisi <= 1)
-            return asama1Sesleri;
-        else if (delilSayisi <= 3)
-            return asama2Sesleri;
-        else
-            return asama3Sesleri;
+        if (delilSayisi <= 1) return asama1Sesleri;
+        else if (delilSayisi <= 3) return asama2Sesleri;
+        else return asama3Sesleri;
     }
 
     public IEnumerator Konustur(System.Action<string> metinCallback, System.Action bitis)
@@ -70,22 +65,31 @@ public class NpcDiyalog : MonoBehaviour
         string[] konusmalar = MevcutKonusmalariGetir();
         AudioClip[] sesler = MevcutSesleriGetir();
 
+        if (konusmalar == null || konusmalar.Length == 0)
+        {
+            konusuyor = false;
+            bitis?.Invoke();
+            yield break;
+        }
+
         for (int i = 0; i < konusmalar.Length; i++)
         {
+            if (!oyuncuYakinda) break;
+
             metinCallback?.Invoke(konusmalar[i]);
 
-            if (sesler != null && i < sesler.Length && sesler[i] != null)
+            if (sesler != null && i < sesler.Length && sesler[i] != null && audioSource != null)
             {
                 audioSource.clip = sesler[i];
                 audioSource.Play();
-                yield return new WaitWhile(() => audioSource.isPlaying);
+                yield return new WaitWhile(() => audioSource.isPlaying && oyuncuYakinda);
             }
             else
             {
-                yield return new WaitForSeconds(konusmalar[i].Length * 0.06f);
+                yield return new WaitForSeconds(konusmalar[i].Length * 0.05f + 1f);
             }
 
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.3f);
         }
 
         konusuyor = false;

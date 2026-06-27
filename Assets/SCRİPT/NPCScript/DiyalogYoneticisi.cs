@@ -7,7 +7,7 @@ public class DiyalogYoneticisi : MonoBehaviour
 {
     public static DiyalogYoneticisi Instance;
 
-    [Header("UI")]
+    [Header("UI Elemanları")]
     public GameObject diyalogPanel;
     public TextMeshProUGUI npcAdiText;
     public TextMeshProUGUI konusmaText;
@@ -23,8 +23,8 @@ public class DiyalogYoneticisi : MonoBehaviour
 
     void Start()
     {
-        diyalogPanel.SetActive(false);
-        konusIpucu.SetActive(false);
+        if (diyalogPanel != null) diyalogPanel.SetActive(false);
+        if (konusIpucu != null) konusIpucu.SetActive(false);
     }
 
     void Update()
@@ -44,22 +44,18 @@ public class DiyalogYoneticisi : MonoBehaviour
     {
         if (diyalogAcik) return;
 
-        Collider[] yakinlar = Physics.OverlapSphere(
-            transform.position, etkilesimMesafesi);
-
+        Collider[] yakinlar = Physics.OverlapSphere(transform.position, etkilesimMesafesi);
         NpcDiyalog enYakin = null;
         float enYakinMesafe = etkilesimMesafesi;
 
         foreach (Collider col in yakinlar)
         {
             NpcDiyalog npc = col.GetComponent<NpcDiyalog>();
-            if (npc == null)
-                npc = col.GetComponentInParent<NpcDiyalog>();
+            if (npc == null) npc = col.GetComponentInParent<NpcDiyalog>();
 
             if (npc != null)
             {
-                float mesafe = Vector3.Distance(
-                    transform.position, npc.transform.position);
+                float mesafe = Vector3.Distance(transform.position, npc.transform.position);
                 if (mesafe < enYakinMesafe)
                 {
                     enYakinMesafe = mesafe;
@@ -75,11 +71,11 @@ public class DiyalogYoneticisi : MonoBehaviour
             if (yakinNpc != null)
             {
                 yakinNpc.OyuncuYaklasti();
-                konusIpucu.SetActive(true);
+                if (konusIpucu != null) konusIpucu.SetActive(true);
             }
             else
             {
-                konusIpucu.SetActive(false);
+                if (konusIpucu != null) konusIpucu.SetActive(false);
             }
         }
     }
@@ -87,23 +83,23 @@ public class DiyalogYoneticisi : MonoBehaviour
     void DiyaloguBaslat(NpcDiyalog npc)
     {
         diyalogAcik = true;
-        diyalogPanel.SetActive(true);
-        konusIpucu.SetActive(false);
-        npcAdiText.text = npc.GetAd();
-        konusmaText.text = "";
+        if (diyalogPanel != null) diyalogPanel.SetActive(true);
+        if (konusIpucu != null) konusIpucu.SetActive(false);
+        if (npcAdiText != null) npcAdiText.text = npc.GetAd();
+        if (konusmaText != null) konusmaText.text = "";
 
         StartCoroutine(npc.Konustur(
-            metin => konusmaText.text = metin,
+            metin => { if (konusmaText != null) konusmaText.text = metin; },
             () => StartCoroutine(DiyaloguKapat())
         ));
     }
 
     IEnumerator DiyaloguKapat()
     {
-        yield return new WaitForSeconds(1f);
-        diyalogPanel.SetActive(false);
+        yield return new WaitForSeconds(0.5f);
+        if (diyalogPanel != null) diyalogPanel.SetActive(false);
         diyalogAcik = false;
-        if (yakinNpc != null)
+        if (yakinNpc != null && konusIpucu != null)
             konusIpucu.SetActive(true);
     }
 }

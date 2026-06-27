@@ -13,20 +13,20 @@ public class NotDefteriYoneticisi : MonoBehaviour
     public Transform icerikAlani; // Scroll View -> Content nesnesi
 
     [Header("Prefab")]
-    public GameObject delilKartiPrefab; // Boş kalırsa kod otomatik oluşturur
+    public GameObject delilKartiPrefab; // Boş kalırsak kod otomatik oluşturur
 
     private bool acik = false;
     private List<string> bulunanDeliller = new List<string>();
     private List<string> bulunanNotlar = new List<string>();
 
-    // Delil adına göre dedektif notları
+    // Yeni Paket Hikayeye Göre Güncellenmiş Dedektif Notları
     private Dictionary<string, string> delilNotlari = new Dictionary<string, string>()
     {
-        { "Yırtık Bakım Defteri", "Bakım kayıtları sahte. Biri bu defterde oynama yapmış." },
-        { "Kırık Vinç Teli", "Bu tel yıpranmadan kopmaz. Bilerek mi kesildi?" },
-        { "Anonim Not", "Bu notu kim yazdı? Murat uyarılmış ama gitmemiş." },
-        { "Güvenlik Kamera Kaydı", "Gece 2'de makine odasında kim var?" },
-        { "İlaç Kutusu", "Murat'ın ilacı burada. Görmesi bozuktu, gece çalışması yasaktı." }
+        { "Yırtık Bakım Defteri", "Bakım kayıtları sahte. Biri bu defterin sayfalarını bilerek yırtmış." },
+        { "Kırık Vinç Teli", "Bu çelik tel yıpranmayla kopmaz. Ağzı spiral taşıyla kesilmiş gibi duruyor." },
+        { "Anonim Not", "Murat'ın baretine sıkıştırılan not: 'Konuşursan sonun limanın dibi olur' yazıyor." },
+        { "Güvenlik Kamera Kaydı", "Gece 02:00 kayıtları. Müdür Kemal'in elinde bir aletle vinç dairesine girdiğini gösteriyor." },
+        { "İlaç Kutusu", "Murat'ın kullandığı ağır göz ilacı. Gece vardiyasında çalışması yasal olarak imkansızdı." }
     };
 
     void Awake()
@@ -43,7 +43,6 @@ public class NotDefteriYoneticisi : MonoBehaviour
 
     void Start()
     {
-        // Yeni bir oyuna başlandığında listelerin temiz olduğundan emin oluyoruz
         bulunanDeliller.Clear();
         bulunanNotlar.Clear();
 
@@ -56,7 +55,6 @@ public class NotDefteriYoneticisi : MonoBehaviour
         Keyboard klavye = Keyboard.current;
         if (klavye == null) return;
 
-        // TAB tuşuna basıldığında defteri aç/kapat
         if (klavye.tabKey.wasPressedThisFrame)
         {
             acik = !acik;
@@ -89,7 +87,6 @@ public class NotDefteriYoneticisi : MonoBehaviour
             string not = delilNotlari.ContainsKey(delilAdi) ? delilNotlari[delilAdi] : "İnceleniyor...";
             bulunanNotlar.Add(not);
 
-            // Eğer oyuncu defter açıkken delil toplarsa listeyi anında yenile
             if (acik)
             {
                 DefterGuncelle();
@@ -101,13 +98,11 @@ public class NotDefteriYoneticisi : MonoBehaviour
     {
         if (icerikAlani == null) return;
 
-        // Eski kartları temizle
         foreach (Transform child in icerikAlani)
         {
             Destroy(child.gameObject);
         }
 
-        // Henüz hiç delil toplanmadıysa uyarı yazısı çıkar
         if (bulunanDeliller.Count == 0)
         {
             GameObject bosKart = new GameObject("BosKart");
@@ -120,7 +115,6 @@ public class NotDefteriYoneticisi : MonoBehaviour
             return;
         }
 
-        // Her delil için bir kart oluştur veya prefab'dan üret
         for (int i = 0; i < bulunanDeliller.Count; i++)
         {
             if (delilKartiPrefab != null)
@@ -148,7 +142,6 @@ public class NotDefteriYoneticisi : MonoBehaviour
         RectTransform kartRect = kart.AddComponent<RectTransform>();
         kartRect.sizeDelta = new Vector2(0, 110);
 
-        // Layout Element sayesinde genişlik otomatik olarak Content nesnesine uyum sağlar
         LayoutElement layoutElement = kart.AddComponent<LayoutElement>();
         layoutElement.minHeight = 110;
         layoutElement.preferredWidth = 900; 
@@ -156,7 +149,6 @@ public class NotDefteriYoneticisi : MonoBehaviour
         Image kartArkaplan = kart.AddComponent<Image>();
         kartArkaplan.color = new Color(0.15f, 0.1f, 0.05f, 0.9f);
 
-        // Delil adı
         GameObject adObj = new GameObject("Ad");
         adObj.transform.SetParent(kart.transform, false);
         RectTransform adRect = adObj.AddComponent<RectTransform>();
@@ -173,7 +165,6 @@ public class NotDefteriYoneticisi : MonoBehaviour
         adText.enableWordWrapping = true;
         adText.overflowMode = TextOverflowModes.Ellipsis;
 
-        // Dedektif notu
         GameObject notObj = new GameObject("Not");
         notObj.transform.SetParent(kart.transform, false);
         RectTransform notRect = notObj.AddComponent<RectTransform>();

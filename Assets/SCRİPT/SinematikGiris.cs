@@ -8,7 +8,7 @@ using System.Collections;
 public class SinematikGiris : MonoBehaviour
 {
     [Header("Görseller")]
-    public Sprite[] gorseller;
+    public Sprite[] gorseller; // Müfettiş Notu: Inspector'dan en az 6 adet fotoğraf atamalısın (0, 1, 2, 3, 4, 5)
 
     [Header("UI")]
     public Image arkaPlanGorsel;
@@ -28,26 +28,26 @@ public class SinematikGiris : MonoBehaviour
     {
         "14 Kasım. Gece 02:30.",
         "Karadeniz Limanı — 3 Numaralı Yükleme İskelesi.",
-        "Vinç operatörü Murat Çelik, 18 metre yüksekten düştü.",
-        "Polis raporu: Ekipman arızası dedi. Dava kapatıldı.",
-        "Ama bu sabah telefon çaldı.",
-        "Murat'ın eşi ağlayarak konuştu:",
-        "'Kocam tehdit almıştı. Birisi onu öldürdü.'",
-        "Sen bu şehrin en iyi dedektifisin.",
-        "Ve bu gece gerçeği bulmak için tek şansın var."
+        "Vinç operatörü Murat Çelik, 18 metre yüksekten düşerek can verdi.",
+        "Polis raporu: Ekipman arızası ve işçi ihmali dedi. Dosya kapatıldı.",
+        "Ama bu sabah dedektiflik ofisinin telefonu acı acı çaldı.",
+        "Murat'ın eşi ağlayarak konuşuyordu:",
+        "'Kocam tehdit ediliyordu dedektif. Onu o vince zorla çıkardılar, lütfen yardım edin!'",
+        "Sen bu şehrin en karanlık gizemlerini çözen dedektifsin.",
+        "Andım olsun ki, bu gece şantiyede gerçeği bulmak için tek bir şansın var."
     };
 
-    // KRİTİK GÜNCELLEME BURASI: 6. Görsel (Index 5) çıkarıldı, Son iki konuşma 7. Görsele (Index 6) bağlandı!
+    // TAMİR EDİLDİ: Altyazı dizisi 9 elemanlı olduğu için bu dizi de tam 9 elemana eşitlendi!
+  // GÜNCELLENDİ: Tam 9 elemanlı, son iki satırda da son görseli (5) gösterecek şekilde ayarlandı
     int[] gorselIndeksleri = new int[]
     {
-        0, 0,  // 1. ve 2. Yazı -> Görsel 1 (Liman girişi)
-        1, 1,  // 3. ve 4. Yazı -> Görsel 2 (Kaza yeri)
-        2,     // 5. Yazı -> Görsel 3 (Telefon)
-        3,     // 6. Yazı -> Görsel 4 (Ağlayan kadın)
-        4,     // 7. Yazı -> Görsel 5 (Tehdit mektubu)
-        6, 6   // 8. ve 9. Yazı -> Görsel 7 (Dedektif limana bakıyor)
+        0, 0,  // 14 Kasım ve Karadeniz Limanı
+        1, 1,  // Murat Çelik ve Polis raporu
+        2,     // Telefon çalma
+        3,     // Eşinin konuşması
+        4,     // "Sen bu şehrin en karanlık gizemlerini çözen dedektifsin."
+        5, 5   // "Andım olsun ki..." ve bitişte son görsel (5)
     };
-
     private bool basladi = false;
     private bool gecisYapiliyor = false;
 
@@ -78,9 +78,12 @@ public class SinematikGiris : MonoBehaviour
 
     void Start()
     {
-        devamText.gameObject.SetActive(false);
-        altyaziText.text = "";
-        altyaziText.alpha = 0f;
+        if (devamText != null) devamText.gameObject.SetActive(false);
+        if (altyaziText != null)
+        {
+            altyaziText.text = "";
+            altyaziText.alpha = 0f;
+        }
         karartmaEkrani.color = new Color(0, 0, 0, 1);
         arkaPlanGorsel.color = new Color(1, 1, 1, 0);
         StartCoroutine(SinematikBaslat());
@@ -116,13 +119,13 @@ public class SinematikGiris : MonoBehaviour
         for (int i = 0; i < altyazilar.Length; i++)
         {
             int yeniGorselIndex = gorselIndeksleri[i];
-            if (yeniGorselIndex != mevcutGorselIndex)
+            if (yeniGorselIndex != mevcutGorselIndex && gorseller != null && yeniGorselIndex < gorseller.Length)
             {
                 mevcutGorselIndex = yeniGorselIndex;
                 yield return StartCoroutine(GorselGecis(gorseller[yeniGorselIndex]));
             }
 
-            if (seslendirmeSource != null && seslendirmeler != null && i < seslendirmeler.Length)
+            if (seslendirmeSource != null && seslendirmeler != null && i < seslendirmeler.Length && seslendirmeler[i] != null)
             {
                 seslendirmeSource.clip = seslendirmeler[i];
                 seslendirmeSource.Play();
@@ -133,25 +136,30 @@ public class SinematikGiris : MonoBehaviour
             if (seslendirmeSource != null && seslendirmeSource.isPlaying)
                 yield return new WaitWhile(() => seslendirmeSource.isPlaying);
             else
-                yield return new WaitForSeconds(2f);
+                yield return new WaitForSeconds(2.5f);
 
             yield return StartCoroutine(AltyaziSil(0.5f));
             yield return new WaitForSeconds(0.3f);
         }
 
-        devamText.gameObject.SetActive(true);
-        devamText.text = "[ SPACE — Devam Et ]";
+        if (devamText != null)
+        {
+            devamText.gameObject.SetActive(true);
+            devamText.text = "[ SPACE — Limana Giriş Yap ]";
+        }
     }
 
     IEnumerator GorselGecis(Sprite yeniGorsel)
     {
+        if (arkaPlanGorsel == null) yield break;
+
         float gecenSure = 0f;
         Color renk = arkaPlanGorsel.color;
 
-        while (gecenSure < 0.6f)
+        while (gecenSure < 0.4f)
         {
             gecenSure += Time.deltaTime;
-            renk.a = Mathf.Lerp(renk.a, 0f, gecenSure / 0.6f);
+            renk.a = Mathf.Lerp(renk.a, 0f, gecenSure / 0.4f);
             arkaPlanGorsel.color = renk;
             yield return null;
         }
@@ -159,10 +167,10 @@ public class SinematikGiris : MonoBehaviour
         arkaPlanGorsel.sprite = yeniGorsel;
 
         gecenSure = 0f;
-        while (gecenSure < 1f)
+        while (gecenSure < 0.8f)
         {
             gecenSure += Time.deltaTime;
-            renk.a = Mathf.Lerp(0f, 1f, gecenSure / 1f);
+            renk.a = Mathf.Lerp(0f, 1f, gecenSure / 0.8f);
             arkaPlanGorsel.color = renk;
             yield return null;
         }
@@ -170,6 +178,7 @@ public class SinematikGiris : MonoBehaviour
 
     IEnumerator AltyaziYaz(string metin)
     {
+        if (altyaziText == null) yield break;
         altyaziText.text = "";
         altyaziText.alpha = 1f;
         foreach (char harf in metin)
@@ -181,6 +190,7 @@ public class SinematikGiris : MonoBehaviour
 
     IEnumerator AltyaziSil(float sure)
     {
+        if (altyaziText == null) yield break;
         float gecenSure = 0f;
         while (gecenSure < sure)
         {
@@ -194,6 +204,7 @@ public class SinematikGiris : MonoBehaviour
 
     IEnumerator FadeYap(float baslangic, float bitis, float sure)
     {
+        if (karartmaEkrani == null) yield break;
         float gecenSure = 0f;
         Color renk = karartmaEkrani.color;
         while (gecenSure < sure)
@@ -207,7 +218,7 @@ public class SinematikGiris : MonoBehaviour
 
     IEnumerator OyunaGec()
     {
-        yield return StartCoroutine(FadeYap(0f, 1f, 1.5f));
-        SceneManager.LoadScene(3); // Limana kusursuz geçiş!
+        yield return StartCoroutine(FadeYap(0f, 1f, 1.2f));
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }

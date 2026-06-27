@@ -737,7 +737,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: dd6f35059a57a6b43afc9d27ac031ee9, type: 3}
   - {fileID: 21300000, guid: a76232b30d7d4a3499c6a2fb9ed0b676, type: 3}
   - {fileID: 21300000, guid: 7be653478c28a8b449d643144658162b, type: 3}
-  - {fileID: 21300000, guid: 01b7a68a6da0033429d12c1d4db023c0, type: 3}
   - {fileID: 21300000, guid: b8f431473aa80a943af8d755be24cb41, type: 3}
   arkaPlanGorsel: {fileID: 2076835962}
   karartmaEkrani: {fileID: 1639876805}
@@ -745,15 +744,15 @@ MonoBehaviour:
   devamText: {fileID: 1296616517}
   muzikDosyasi: {fileID: 8300000, guid: 75dcc17ead2257a4993a353b5a71195e, type: 3}
   seslendirmeler:
-  - {fileID: 8300000, guid: 2a859b92f2dc36a4fadda21a78c5cf29, type: 3}
-  - {fileID: 8300000, guid: a491183c7d34aa3468c73261eb425d36, type: 3}
-  - {fileID: 8300000, guid: b2332da6005a25d4da76ec77544b01e9, type: 3}
-  - {fileID: 8300000, guid: 54ba06f9770998f4e8f2c31f24e956d1, type: 3}
-  - {fileID: 8300000, guid: d073538d980caf344a736ee552806ae2, type: 3}
-  - {fileID: 8300000, guid: a8ac9e60833eaad428499da7cecf38f2, type: 3}
-  - {fileID: 8300000, guid: 202fab1a227e6b64e9dc5c007dec036e, type: 3}
-  - {fileID: 8300000, guid: 0dcbf03b60a228546b1568a701d7b419, type: 3}
-  - {fileID: 8300000, guid: 27851668cae4fb6459131a7b30e6ebe6, type: 3}
+  - {fileID: 8300000, guid: 52732b3c16c333e468b94510f21a9c58, type: 3}
+  - {fileID: 8300000, guid: 3d2ac9a7ccbe76e4cad929b1e726918f, type: 3}
+  - {fileID: 8300000, guid: f2d60b850a8f51545a1ce5e4e6bb8965, type: 3}
+  - {fileID: 8300000, guid: dfc7723de7074954d83c9c1379b2bce0, type: 3}
+  - {fileID: 8300000, guid: 37b90f0955f469e4db9e40b1d4c5ec37, type: 3}
+  - {fileID: 8300000, guid: 136899aae19fd954e9bab350b2f0abf0, type: 3}
+  - {fileID: 8300000, guid: 3d2343d6f1784fe4cae6657532fed99d, type: 3}
+  - {fileID: 8300000, guid: 5ab45cd0ad915404f9275b3f32115f54, type: 3}
+  - {fileID: 8300000, guid: 9a7eb63b6cfd4c040a341814a1a21bf0, type: 3}
 --- !u!82 &1404644074
 AudioSource:
   m_ObjectHideFlags: 0

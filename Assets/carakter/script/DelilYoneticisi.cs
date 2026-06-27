@@ -21,21 +21,21 @@ public class DelilYoneticisi : MonoBehaviour
     public TextMeshProUGUI bildirimIsim;
     public TextMeshProUGUI bildirimNot;
 
-    // Her delilin adına göre not döndür
+    // Sabitlenmiş ve eşleşen delil notları
     string DelilNotunuGetir(string delilAdi)
     {
         switch (delilAdi)
         {
             case "Yırtık Bakım Defteri":
-                return "Bakım kayıtları sahte. Biri bu defterde oynama yapmış.";
+                return "Bakım kayıtları sahte. Biri bu defterin sayfalarını bilerek yırtmış.";
             case "Kırık Vinç Teli":
-                return "Bu tel yıpranmadan kopmaz. Bilerek mi kesildi?";
+                return "Bu çelik tel yıpranmayla kopmaz. Ağzı spiral taşıyla kesilmiş gibi duruyor.";
             case "Anonim Not":
-                return "Bu notu kim yazdı? Murat uyarılmış ama gitmemiş.";
+                return "Murat'ın baretine sıkıştırılan not: 'Konuşursan sonun limanın dibi olur' yazıyor.";
             case "Güvenlik Kamera Kaydı":
-                return "Gece 2'de makine odasında kim var?";
-   case "İlaç Kutusu":
-    return "Murat'ın ilacı konteyner içinde. Görmesi bozuktu, gece çalışması yasaktı.";
+                return "Gece 02:00 kayıtları. Müdür Kemal'in elinde bir aletle vinç dairesine girdiğini gösteriyor.";
+            case "İlaç Kutusu":
+                return "Murat'ın kullandığı ağır göz ilacı. Gece vardiyasında çalışması yasal olarak imkansızdı.";
             default:
                 return "Bu delil inceleniyor...";
         }
@@ -45,23 +45,24 @@ public class DelilYoneticisi : MonoBehaviour
     {
         Instance = this;
     }
+
     public int BulunanDelilSayisiniGetir()
-{
-    return bulunanDelilSayisi;
-}
+    {
+        return bulunanDelilSayisi;
+    }
 
     void Start()
     {
-        gorevTamamPanel.SetActive(false);
-        bildirimPanel.SetActive(false);
+        if (gorevTamamPanel != null) gorevTamamPanel.SetActive(false);
+        if (bildirimPanel != null) bildirimPanel.SetActive(false);
         DelilSayaciniGuncelle();
     }
 
     public void DelilBulundu(string delilAdi)
     {
-        bildirimBaslik.text = "DELİL BULUNDU";
-        bildirimIsim.text = delilAdi;
-        bildirimNot.text = DelilNotunuGetir(delilAdi);
+        if (bildirimBaslik != null) bildirimBaslik.text = "DELİL BULUNDU";
+        if (bildirimIsim != null) bildirimIsim.text = delilAdi;
+        if (bildirimNot != null) bildirimNot.text = DelilNotunuGetir(delilAdi);
 
         StopCoroutine("BildirimAnimasyon");
         StartCoroutine(BildirimAnimasyon());
@@ -75,6 +76,8 @@ public class DelilYoneticisi : MonoBehaviour
 
     IEnumerator BildirimAnimasyon()
     {
+        if (bildirimPanel == null) yield break;
+
         bildirimPanel.SetActive(true);
         RectTransform rect = bildirimPanel.GetComponent<RectTransform>();
 
@@ -108,18 +111,20 @@ public class DelilYoneticisi : MonoBehaviour
 
     void DelilSayaciniGuncelle()
     {
-        delilSayaciText.text = bulunanDelilSayisi + "/" + toplamDelilSayisi + " Delil Bulundu";
+        if (delilSayaciText != null)
+            delilSayaciText.text = bulunanDelilSayisi + "/" + toplamDelilSayisi + " Delil Bulundu";
     }
 
     void GorevTamamlandi()
     {
-        gorevTamamPanel.SetActive(true);
+        if (gorevTamamPanel != null) gorevTamamPanel.SetActive(true);
         Invoke("PaneliKapat", 2f);
     }
 
     void PaneliKapat()
     {
-        gorevTamamPanel.SetActive(false);
-        SecimYoneticisi.Instance.SecimEkraniniAc();
+        if (gorevTamamPanel != null) gorevTamamPanel.SetActive(false);
+        if (SecimYoneticisi.Instance != null)
+            SecimYoneticisi.Instance.SecimEkraniniAc();
     }
 }
