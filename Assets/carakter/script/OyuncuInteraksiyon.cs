@@ -111,26 +111,31 @@ public class OyuncuInteraksiyon : MonoBehaviour
         ipucuText.gameObject.SetActive(true);
         ipucuText.text = "F - Al";
     }
+void FInputKontrol()
+{
+    Keyboard klavye = Keyboard.current;
+    if (klavye == null) return;
 
-    void FInputKontrol()
+    if (klavye.fKey.wasPressedThisFrame && alModu)
     {
-        Keyboard klavye = Keyboard.current;
-        if (klavye == null) return;
-
-        if (klavye.fKey.wasPressedThisFrame && alModu)
+        alModu = false;
+        if (ipucuText != null && ipucuText.gameObject != null)
         {
-            alModu = false;
             ipucuText.gameObject.SetActive(false);
+        }
 
-            // Çömelme bitsin, ayağa kalk
+        // Çömelme bitsin, ayağa kalk (Tekrar eden satır temizlendi)
+        if (animator != null)
+        {
             animator.SetBool("Comeldi", false);
-         animator.SetBool("Comeldi", false);
+        }
 
-            if (yakinDelil != null)
-            {
-                yakinDelil.Topla();
-                yakinDelil = null;
-            }
+        if (yakinDelil != null)
+        {
+            // HATA BURADAYDI: Parantez içine true göndererek toplama animasyonunu tetikliyoruz
+            yakinDelil.Topla(true); 
+            yakinDelil = null;
         }
     }
+}
 }

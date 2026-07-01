@@ -1,98 +1,102 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class NpcDiyalog : MonoBehaviour
 {
     [Header("NPC Bilgileri")]
     public string npcAdi = "NPC";
 
-    [Header("Aşama 1 — Delil Yok (0-1 delil)")]
-    [TextArea] public string[] asama1Konusmalar;
-    public AudioClip[] asama1Sesleri;
+    [Header("Aşama 1 — Hikaye Başlangıcı")]
+    [TextArea(3, 5)] public List<string> asama1Konusmalar = new List<string>();
+    public List<AudioClip> asama1Sesleri = new List<AudioClip>();
 
-    [Header("Aşama 2 — Bazı Deliller (2-3 delil)")]
-    [TextArea] public string[] asama2Konusmalar;
-    public AudioClip[] asama2Sesleri;
+    [Header("Aşama 2 — İlaç Kutusu / Ahmet Sorgusu")]
+    [TextArea(3, 5)] public List<string> asama2Konusmalar = new List<string>();
+    public List<AudioClip> asama2Sesleri = new List<AudioClip>();
 
-    [Header("Aşama 3 — Tüm Deliller (4-5 delil)")]
-    [TextArea] public string[] asama3Konusmalar;
-    public AudioClip[] asama3Sesleri;
+    [Header("Aşama 3 — Defter ve Pano / Kemal Köşeye Sıkışma")]
+    [TextArea(3, 5)] public List<string> asama3Konusmalar = new List<string>();
+    public List<AudioClip> asama3Sesleri = new List<AudioClip>();
+
+    [Header("Aşama 4 — Sabotaj Delilleri / Son Tehdit")]
+    [TextArea(3, 5)] public List<string> asama4Konusmalar = new List<string>();
+    public List<AudioClip> asama4Sesleri = new List<AudioClip>();
 
     private AudioSource audioSource;
-    private bool konusuyor = false;
-    private bool oyuncuYakinda = false;
 
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-            audioSource = gameObject.AddComponent<AudioSource>();
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     public string GetAd() { return npcAdi; }
-    public bool KonusuyorMu() { return konusuyor; }
-    public void OyuncuYaklasti() { oyuncuYakinda = true; }
-    public void OyuncuUzaklasti()
+    public void OyuncuYaklasti() { }
+    public void OyuncuUzaklasti() { }
+
+    public IEnumerator Konustur(System.Action<string> metinGosterici, System.Action diyalogBitti)
     {
-        oyuncuYakinda = false;
-        konusuyor = false;
-        if(audioSource != null) audioSource.Stop();
-    }
+        List<string> secilenKonusmalar = asama1Konusmalar;
+        List<AudioClip> secilenSesler = asama1Sesleri;
 
-    string[] MevcutKonusmalariGetir()
-    {
-        if (DelilYoneticisi.Instance == null) return asama1Konusmalar;
-        int delilSayisi = DelilYoneticisi.Instance.BulunanDelilSayisiniGetir();
-
-        if (delilSayisi <= 1) return asama1Konusmalar;
-        else if (delilSayisi <= 3) return asama2Konusmalar;
-        else return asama3Konusmalar;
-    }
-
-    AudioClip[] MevcutSesleriGetir()
-    {
-        if (DelilYoneticisi.Instance == null) return asama1Sesleri;
-        int delilSayisi = DelilYoneticisi.Instance.BulunanDelilSayisiniGetir();
-
-        if (delilSayisi <= 1) return asama1Sesleri;
-        else if (delilSayisi <= 3) return asama2Sesleri;
-        else return asama3Sesleri;
-    }
-
-    public IEnumerator Konustur(System.Action<string> metinCallback, System.Action bitis)
-    {
-        konusuyor = true;
-        string[] konusmalar = MevcutKonusmalariGetir();
-        AudioClip[] sesler = MevcutSesleriGetir();
-
-        if (konusmalar == null || konusmalar.Length == 0)
+        if (GorevYoneticisi.Instance != null)
         {
-            konusuyor = false;
-            bitis?.Invoke();
-            yield break;
+            // === AHMET DİYALOG AKIŞI ===
+            if (npcAdi.Contains("Ahmet"))
+            {
+                if (GorevYoneticisi.Instance.odaVePanoIncelendi)
+                {
+                    secilenKonusmalar = asama3Konusmalar;
+                    secilenSesler = asama3Sesleri;
+                }
+                else if (GorevYoneticisi.Instance.ilacKutusuAlindi)
+                {
+                    secilenKonusmalar = asama2Konusmalar;
+                    secilenSesler = asama2Sesleri;
+                }
+            }
+            // === KEMAL DİYALOG AKIŞI ===
+            else if (npcAdi.Contains("Kemal"))
+            {
+                if (GorevYoneticisi.Instance.teknikDelillerAlindi)
+                {
+                    secilenKonusmalar = asama4Konusmalar;
+                    secilenSesler = asama4Sesleri;
+                }
+                else if (GorevYoneticisi.Instance.odaVePanoIncelendi)
+                {
+                    secilenKonusmalar = asama3Konusmalar;
+                    secilenSesler = asama3Sesleri;
+                }
+            }
+            // === RIZA DİYALOG AKIŞI ===
+            else if (npcAdi.Contains("Rıza") || npcAdi.Contains("Riza"))
+            {
+                if (GorevYoneticisi.Instance.teknikDelillerAlindi)
+                {
+                    secilenKonusmalar = asama2Konusmalar;
+                    secilenSesler = asama2Sesleri;
+                }
+            }
         }
 
-        for (int i = 0; i < konusmalar.Length; i++)
+        for (int i = 0; i < secilenKonusmalar.Count; i++)
         {
-            if (!oyuncuYakinda) break;
+            metinGosterici?.Invoke(secilenKonusmalar[i]);
 
-            metinCallback?.Invoke(konusmalar[i]);
-
-            if (sesler != null && i < sesler.Length && sesler[i] != null && audioSource != null)
+            if (secilenSesler != null && i < secilenSesler.Count && secilenSesler[i] != null)
             {
-                audioSource.clip = sesler[i];
+                audioSource.clip = secilenSesler[i];
                 audioSource.Play();
-                yield return new WaitWhile(() => audioSource.isPlaying && oyuncuYakinda);
+                yield return new WaitForSeconds(secilenSesler[i].length);
             }
             else
             {
-                yield return new WaitForSeconds(konusmalar[i].Length * 0.05f + 1f);
+                yield return new WaitForSeconds(4f);
             }
-
-            yield return new WaitForSeconds(0.3f);
         }
 
-        konusuyor = false;
-        bitis?.Invoke();
+        diyalogBitti?.Invoke();
     }
 }

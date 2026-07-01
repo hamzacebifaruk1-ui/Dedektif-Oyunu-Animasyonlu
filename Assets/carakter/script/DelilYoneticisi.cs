@@ -21,11 +21,12 @@ public class DelilYoneticisi : MonoBehaviour
     public TextMeshProUGUI bildirimIsim;
     public TextMeshProUGUI bildirimNot;
 
-    // Sabitlenmiş ve eşleşen delil notları
     string DelilNotunuGetir(string delilAdi)
     {
         switch (delilAdi)
         {
+            case "Kırık Vinç Kancası":
+                return "Vincin kancasındaki derin çatlaklar gizlenmeye çalışılmış. Kaza göz göre göre gelmiş.";
             case "Yırtık Bakım Defteri":
                 return "Bakım kayıtları sahte. Biri bu defterin sayfalarını bilerek yırtmış.";
             case "Kırık Vinç Teli":

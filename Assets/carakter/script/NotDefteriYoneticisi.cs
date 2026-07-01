@@ -157,12 +157,15 @@ public class NotDefteriYoneticisi : MonoBehaviour
         adRect.offsetMin = new Vector2(20, 5);
         adRect.offsetMax = new Vector2(-20, -5);
 
-        TextMeshProUGUI adText = adObj.AddComponent<TextMeshProUGUI>();
+       TextMeshProUGUI adText = adObj.AddComponent<TextMeshProUGUI>();
         adText.text = "🔍 " + bulunanDeliller[index];
         adText.fontSize = 22;
         adText.fontStyle = FontStyles.Bold;
         adText.color = new Color(1f, 0.55f, 0f);
-        adText.enableWordWrapping = true;
+        
+        // ESKİ: adText.enableWordWrapping = true;
+        adText.textWrappingMode = TextWrappingModes.Normal; // YENİ HATA ÇÖZÜMÜ
+        
         adText.overflowMode = TextOverflowModes.Ellipsis;
 
         GameObject notObj = new GameObject("Not");
@@ -177,6 +180,8 @@ public class NotDefteriYoneticisi : MonoBehaviour
         notText.text = "▸ " + bulunanNotlar[index];
         notText.fontSize = 18;
         notText.color = new Color(0.85f, 0.85f, 0.85f);
-        notText.enableWordWrapping = true;
+        
+        // ESKİ: notText.enableWordWrapping = true;
+        notText.textWrappingMode = TextWrappingModes.Normal; // YENİ HATA ÇÖZÜMÜ
     }
 }
