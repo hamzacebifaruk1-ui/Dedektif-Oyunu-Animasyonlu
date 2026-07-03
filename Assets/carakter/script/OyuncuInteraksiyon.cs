@@ -43,13 +43,7 @@ public class OyuncuInteraksiyon : MonoBehaviour
 
     void YakinDelilKontrol()
     {
-        if (yakinDelil != null && !yakinDelil.ToplanabilirMi())
-        {
-            yakinDelil = null;
-            ipucuText.gameObject.SetActive(false);
-            return;
-        }
-
+        // Hafıza kilitlenmesini önlemek için her aramadan önce en yakın delili sıfırlayıp baştan tarıyoruz
         Collider[] yakinlar = Physics.OverlapSphere(transform.position, etkilesimMesafesi);
 
         DelilNesnesi enYakinDelil = null;
@@ -63,6 +57,7 @@ public class OyuncuInteraksiyon : MonoBehaviour
             if (delil == null)
                 delil = col.GetComponentInParent<DelilNesnesi>();
 
+            // Eğer sahdede bir delil nesnesi varsa ve şu anki görev durumuna göre TOPLANABİLİRSE
             if (delil != null && delil.ToplanabilirMi())
             {
                 float mesafe = Vector3.Distance(transform.position, delil.transform.position);
@@ -74,16 +69,24 @@ public class OyuncuInteraksiyon : MonoBehaviour
             }
         }
 
+        // Güncel yakındaki delili ata
         yakinDelil = enYakinDelil;
 
+        // UI Güncelleme Alanı
         if (yakinDelil != null)
         {
-            ipucuText.gameObject.SetActive(true);
-            ipucuText.text = "E - İncele";
+            if (ipucuText != null)
+            {
+                ipucuText.gameObject.SetActive(true);
+                ipucuText.text = "E - İncele";
+            }
         }
         else
         {
-            ipucuText.gameObject.SetActive(false);
+            if (ipucuText != null && !incelemeModu && !alModu)
+            {
+                ipucuText.gameObject.SetActive(false);
+            }
         }
     }
 
@@ -95,10 +98,12 @@ public class OyuncuInteraksiyon : MonoBehaviour
         if (klavye.eKey.wasPressedThisFrame && !incelemeModu && !alModu && yakinDelil != null)
         {
             incelemeModu = true;
-            ipucuText.gameObject.SetActive(false);
+            if (ipucuText != null) ipucuText.gameObject.SetActive(false);
 
-            // Trigger yerine Bool — pozisyonda kalsın
-            animator.SetBool("Comeldi", true);
+            if (animator != null)
+            {
+                animator.SetBool("Comeldi", true);
+            }
 
             Invoke("IncelemeAnimasyonuBitti", 1.5f);
         }
@@ -108,34 +113,37 @@ public class OyuncuInteraksiyon : MonoBehaviour
     {
         incelemeModu = false;
         alModu = true;
-        ipucuText.gameObject.SetActive(true);
-        ipucuText.text = "F - Al";
+        if (ipucuText != null)
+        {
+            ipucuText.gameObject.SetActive(true);
+            ipucuText.text = "F - Al";
+        }
     }
-void FInputKontrol()
-{
-    Keyboard klavye = Keyboard.current;
-    if (klavye == null) return;
 
-    if (klavye.fKey.wasPressedThisFrame && alModu)
+    void FInputKontrol()
     {
-        alModu = false;
-        if (ipucuText != null && ipucuText.gameObject != null)
-        {
-            ipucuText.gameObject.SetActive(false);
-        }
+        Keyboard klavye = Keyboard.current;
+        if (klavye == null) return;
 
-        // Çömelme bitsin, ayağa kalk (Tekrar eden satır temizlendi)
-        if (animator != null)
+        if (klavye.fKey.wasPressedThisFrame && alModu)
         {
-            animator.SetBool("Comeldi", false);
-        }
+            alModu = false;
+            if (ipucuText != null)
+            {
+                ipucuText.gameObject.SetActive(false);
+            }
 
-        if (yakinDelil != null)
-        {
-            // HATA BURADAYDI: Parantez içine true göndererek toplama animasyonunu tetikliyoruz
-            yakinDelil.Topla(true); 
-            yakinDelil = null;
+            if (animator != null)
+            {
+                animator.SetBool("Comeldi", false);
+            }
+
+            if (yakinDelil != null)
+            {
+                // Delil yerdeyse eğilme kontrolünü başarıyla geçmesi için true gönderiyoruz
+                yakinDelil.Topla(true); 
+                yakinDelil = null;
+            }
         }
     }
-}
 }

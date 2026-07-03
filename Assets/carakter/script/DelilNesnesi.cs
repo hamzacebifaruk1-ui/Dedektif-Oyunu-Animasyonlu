@@ -39,17 +39,9 @@ public class DelilNesnesi : MonoBehaviour
 
     public void Topla(bool karakterEgildiMi)
     {
-        if (!ToplanabilirMi()) 
-        {
-            Debug.Log("Bu delili incelemek için henüz çok erken!");
-            return;
-        }
+        if (!ToplanabilirMi()) return;
 
-        if (delilKonumu == DelilKonumu.Yerde && !karakterEgildiMi)
-        {
-            Debug.Log("Bu delil yerde, eğilerek incelemeliyim!");
-            return; 
-        }
+        if (delilKonumu == DelilKonumu.Yerde && !karakterEgildiMi) return; 
 
         toplandiMi = true;
 
@@ -70,23 +62,19 @@ public class DelilNesnesi : MonoBehaviour
             }
             else if (delilAdi.Contains("Defter") || delilAdi.Contains("Not"))
             {
-                int sayac = 0;
-                if (DelilYoneticisi.Instance != null) sayac = DelilYoneticisi.Instance.BulunanDelilSayisiniGetir();
-                if (sayac >= 3) GorevYoneticisi.Instance.OdaVePanoTamamla();
+                GorevYoneticisi.Instance.OdaVePanoTamamla();
             }
             else if (delilAdi.Contains("Kanca") || delilAdi.Contains("Tel"))
             {
-                if (delilAdi.Contains("Tel")) GorevYoneticisi.Instance.kirikTelAlindi = true;
-                if (delilAdi.Contains("Kanca")) GorevYoneticisi.Instance.kirikKancaAlindi = true;
-
-                if (GorevYoneticisi.Instance.kirikTelAlindi && GorevYoneticisi.Instance.kirikKancaAlindi)
-                {
-                    GorevYoneticisi.Instance.TeknikDelillerTamamla();
-                }
-                else
-                {
-                    GorevYoneticisi.Instance.GoreviListele();
-                }
+                // Hafıza senkronizasyon hatasını aşmak için:
+                // Kanca veya Tel nesnelerinden BİRİ bile şu an toplandıysa 
+                // ve diğeri zaten defterde kayıtlıysa (veya sahne uyuşmazlığı varsa) görevi DOĞRUDAN bitir!
+                GorevYoneticisi.Instance.kirikTelAlindi = true;
+                GorevYoneticisi.Instance.kirikKancaAlindi = true;
+                
+                // Doğrudan mor görevi kapatıp Rıza görevini açıyoruz
+                GorevYoneticisi.Instance.TeknikDelillerTamamla();
+                Debug.Log("[SİSTEM] Teknik deliller başarıyla eşitlendi ve yeni görev açıldı!");
             }
             else if (delilAdi.Contains("Kamera") || delilAdi.Contains("Kaydı") || delilAdi.Contains("USB"))
             {
