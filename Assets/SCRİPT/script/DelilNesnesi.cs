@@ -60,19 +60,11 @@ public class DelilNesnesi : MonoBehaviour
             {
                 GorevYoneticisi.Instance.IlacKutusuBulundu();
             }
-            else if (delilAdi.Contains("Defter") || delilAdi.Contains("Not"))
-            {
-                GorevYoneticisi.Instance.OdaVePanoTamamla();
-            }
+            // DÜZELTME: Defter ve Not kısmı buradan kaldırıldı, yetki DelilYoneticisi'ne devredildi!
             else if (delilAdi.Contains("Kanca") || delilAdi.Contains("Tel"))
             {
-                // Hafıza senkronizasyon hatasını aşmak için:
-                // Kanca veya Tel nesnelerinden BİRİ bile şu an toplandıysa 
-                // ve diğeri zaten defterde kayıtlıysa (veya sahne uyuşmazlığı varsa) görevi DOĞRUDAN bitir!
                 GorevYoneticisi.Instance.kirikTelAlindi = true;
                 GorevYoneticisi.Instance.kirikKancaAlindi = true;
-                
-                // Doğrudan mor görevi kapatıp Rıza görevini açıyoruz
                 GorevYoneticisi.Instance.TeknikDelillerTamamla();
                 Debug.Log("[SİSTEM] Teknik deliller başarıyla eşitlendi ve yeni görev açıldı!");
             }

@@ -21,6 +21,11 @@ public class DelilYoneticisi : MonoBehaviour
     public TextMeshProUGUI bildirimIsim;
     public TextMeshProUGUI bildirimNot;
 
+    [Header("Müdürün Odası Görev Kontrolü")]
+    private bool yirtikDefterBulundu = false;
+    private bool anonimNotBulundu = false;
+    private bool yeniGorevTetiklendi = false;
+
     string DelilNotunuGetir(string delilAdi)
     {
         switch (delilAdi)
@@ -71,8 +76,36 @@ public class DelilYoneticisi : MonoBehaviour
         bulunanDelilSayisi++;
         DelilSayaciniGuncelle();
 
+        // --- MÜDÜRÜN ODASI ÖZEL KONTROLÜ ---
+        if (delilAdi == "Yırtık Bakım Defteri")
+        {
+            yirtikDefterBulundu = true;
+        }
+        else if (delilAdi == "Anonim Not")
+        {
+            anonimNotBulundu = true;
+        }
+
+        // İKİ DELİL DE BULUNDU MU?
+        if (yirtikDefterBulundu && anonimNotBulundu && !yeniGorevTetiklendi)
+        {
+            yeniGorevTetiklendi = true;
+            MudurOdasindakiGoreviTamamla();
+        }
+
         if (bulunanDelilSayisi >= toplamDelilSayisi)
             Invoke("GorevTamamlandi", 3.5f);
+    }
+
+    void MudurOdasindakiGoreviTamamla()
+    {
+        Debug.Log("Müdürün odasındaki iki delil de toplandı! Yeni görev açılıyor...");
+        
+        // HATA VEREN YER DÜZELTİLDİ: Senin orijinal 'OdaVePanoTamamla' fonksiyonun bağlandı
+        if (GorevYoneticisi.Instance != null)
+        {
+            GorevYoneticisi.Instance.OdaVePanoTamamla(); 
+        }
     }
 
     IEnumerator BildirimAnimasyon()
