@@ -41,26 +41,36 @@ public class DiyalogYoneticisi : MonoBehaviour
 
             if (GorevYoneticisi.Instance != null)
             {
-                if (!GorevYoneticisi.Instance.kemalleKonusuldu && !npcAdi.Contains("Kemal"))
+                if (npcAdi.Contains("Kemal") && GorevYoneticisi.Instance.kameraKaydiBulundu)
                 {
-                    StartCoroutine(MudurUyarisiGoster("Önce Şantiye Müdürü Kemal ile konuşup kaza hakkında bilgi almalıyım..."));
-                    return; 
-                }
-
-                if (GorevYoneticisi.Instance.kemalleKonusuldu && !GorevYoneticisi.Instance.ilacKutusuAlindi && !npcAdi.Contains("Kemal"))
-                {
-                    StartCoroutine(MudurUyarisiGoster("Müdürün bahsettiği vinç altındaki o İlaç Kutusu'nu bulmadan kimseyi sorgulayamam..."));
-                    return;
-                }
-
-                if (GorevYoneticisi.Instance.ahmetleKonusuldu && !GorevYoneticisi.Instance.odaVePanoIncelendi && (npcAdi.Contains("Kemal") || npcAdi.Contains("Rıza") || npcAdi.Contains("Riza")))
-                {
-                    StartCoroutine(MudurUyarisiGoster("Ahmet'in bahsettiği Müdürün Odası'ndaki Defteri ve Pano'daki Notu bulmalıyım."));
-                    return;
+                    if (GorevYoneticisi.Instance.kemalleKonusuldu && !GorevYoneticisi.Instance.ilacKutusuAlindi)
+                    {
+                        StartCoroutine(MudurUyarisiGoster("Evlat, vincin oradaki delillere bak demiştin, git önce onları araştır!"));
+                        return;
+                    }
+                    else if (GorevYoneticisi.Instance.ahmetleKonusuldu && !GorevYoneticisi.Instance.odaVePanoIncelendi)
+                    {
+                        StartCoroutine(MudurUyarisiGoster("Odamda ne işin var? Çık dışarı!"));
+                        return;
+                    }
                 }
             }
 
-            DiyaloguBaslat(yakinNpc);
+            diyalogAcik = true;
+            if (konusIpucu != null) konusIpucu.SetActive(false);
+            if (diyalogPanel != null) diyalogPanel.SetActive(true);
+            if (npcAdiText != null) npcAdiText.text = npcAdi;
+            if (konusmaText != null) konusmaText.text = "";
+
+            // Diyalog esnasında oyuncunun yürümesini engellemek için kilit koyuyoruz
+            hareket oyuncuScripti = FindFirstObjectByType<hareket>();
+            if (oyuncuScripti != null) oyuncuScripti.hareketEdebilirMi = false;
+
+            // HATANIN DÜZELTİLDİĞİ YER: Orijinal 'Konustur' fonksiyonunu kendi yapısıyla çağırıyoruz
+            StartCoroutine(yakinNpc.Konustur(
+                metin => { if (konusmaText != null) konusmaText.text = metin; },
+                () => DiyaloguBitir()
+            ));
         }
     }
 
@@ -69,11 +79,13 @@ public class DiyalogYoneticisi : MonoBehaviour
         if (diyalogAcik || uyariGosteriliyor) return;
 
         Collider[] yakinlar = Physics.OverlapSphere(transform.position, etkilesimMesafesi);
-        NpcDiyalog enYakin = null;
+        NpcDiyalog enYakinNpc = null;
         float enYakinMesafe = etkilesimMesafesi;
 
         foreach (Collider col in yakinlar)
         {
+            if (col.transform == transform || col.transform.IsChildOf(transform)) continue;
+
             NpcDiyalog npc = col.GetComponent<NpcDiyalog>();
             if (npc == null) npc = col.GetComponentInParent<NpcDiyalog>();
 
@@ -83,51 +95,39 @@ public class DiyalogYoneticisi : MonoBehaviour
                 if (mesafe < enYakinMesafe)
                 {
                     enYakinMesafe = mesafe;
-                    enYakin = npc;
+                    enYakinNpc = npc;
                 }
             }
         }
 
-        if (enYakin != yakinNpc)
-        {
-            if (yakinNpc != null) yakinNpc.OyuncuUzaklasti();
-            yakinNpc = enYakin;
-            if (yakinNpc != null)
-            {
-                yakinNpc.OyuncuYaklasti();
-                if (konusIpucu != null) konusIpucu.SetActive(true);
-            }
-            else
-            {
-                if (konusIpucu != null) konusIpucu.SetActive(false);
-            }
-        }
+        yakinNpc = enYakinNpc;
+
+        if (yakinNpc != null && konusIpucu != null)
+            konusIpucu.SetActive(true);
+        else if (konusIpucu != null)
+            konusIpucu.SetActive(false);
     }
 
-    void DiyaloguBaslat(NpcDiyalog npc)
+    void DiyaloguBitir()
     {
-        diyalogAcik = true;
-        if (diyalogPanel != null) diyalogPanel.SetActive(true);
-        if (konusIpucu != null) konusIpucu.SetActive(false);
-        if (npcAdiText != null) npcAdiText.text = npc.GetAd();
-        if (konusmaText != null) konusmaText.text = "";
-
-        StartCoroutine(npc.Konustur(
-            metin => { if (konusmaText != null) konusmaText.text = metin; },
-            () => StartCoroutine(DiyaloguKapat(npc.GetAd()))
-        ));
-    }
-
-    IEnumerator DiyaloguKapat(string npcAdi)
-    {
-        yield return new WaitForSeconds(0.5f);
-        if (diyalogPanel != null) diyalogPanel.SetActive(false);
         diyalogAcik = false;
+        if (diyalogPanel != null) diyalogPanel.SetActive(false);
 
-        // DIALOG BITTIĞINDE GÖREVLERI TETIKLE
-        if (GorevYoneticisi.Instance != null)
+        // Diyalog bitince oyuncunun hareket kilidini kaldırıyoruz
+        hareket oyuncuScripti = FindFirstObjectByType<hareket>();
+        if (oyuncuScripti != null) oyuncuScripti.hareketEdebilirMi = true;
+
+        if (yakinNpc != null && GorevYoneticisi.Instance != null)
         {
-            if (npcAdi.Contains("Kemal"))
+            string npcAdi = yakinNpc.GetAd();
+
+            // === FİNAL TETİKLEME KONTROLÜ ===
+            if (npcAdi.Contains("Kemal") && GorevYoneticisi.Instance.kameraKaydiBulundu)
+            {
+                GorevYoneticisi.Instance.FinalHesaplasmaTamamla();
+            }
+            // === NORMAL GÖREV AKIŞ KONTROLLERİ ===
+            else if (npcAdi.Contains("Kemal"))
             {
                 if (GorevYoneticisi.Instance.odaVePanoIncelendi && !GorevYoneticisi.Instance.kemalPanikledi)
                     GorevYoneticisi.Instance.KemalPanikGoreviniTamamla();
@@ -156,13 +156,18 @@ public class DiyalogYoneticisi : MonoBehaviour
         if (konusIpucu != null) konusIpucu.SetActive(false);
         if (diyalogPanel != null) diyalogPanel.SetActive(true);
         
-        if (npcAdiText != null) npcAdiText.text = "Dedektif";
+        if (npcAdiText != null) npcAdiText.text = "Müdür Kemal";
         if (konusmaText != null) konusmaText.text = mesaj;
+
+        hareket oyuncuScripti = FindFirstObjectByType<hareket>();
+        if (oyuncuScripti != null) oyuncuScripti.hareketEdebilirMi = false;
 
         yield return new WaitForSeconds(3f);
 
         if (diyalogPanel != null) diyalogPanel.SetActive(false);
+        if (oyuncuScripti != null) oyuncuScripti.hareketEdebilirMi = true;
         uyariGosteriliyor = false;
-        if (yakinNpc != null && konusIpucu != null) konusIpucu.SetActive(true);
+
+        YakinNpcKontrol();
     }
 }

@@ -55,31 +55,30 @@ public class HedefTakipci : MonoBehaviour
 
         // 2. Yönü ve Açıyı Hesapla (Sağ-Sol-Ön Kontrolü)
         Vector3 hedefeGidenYon = (aktifHedef.position - oyuncu.position).normalized;
-        
-        // Oyuncunun bakış yönü ile hedef yönü arasındaki yatay açıyı buluyoruz
         float aci = Vector3.SignedAngle(oyuncu.forward, hedefeGidenYon, Vector3.up);
 
-        string yonOku = "";
+        string yonMetni = "";
 
-        // Açılara göre ekranda hangi okun çıkacağını belirliyoruz
+        // SADECE METİN: Hiçbir sembol veya sprite barındırmaz, hata verme ihtimali sıfırdır.
         if (aci >= -20f && aci <= 20f)
         {
-            yonOku = "▲ İLERLE"; // Hedef tam önünde veya hafif ön çaprazda
+            yonMetni = "İlerle";
         }
         else if (aci > 20f && aci <= 100f)
         {
-            yonOku = "▶ SAĞA DÖN"; // Hedef sağında
+            yonMetni = "Sağa Dön";
         }
         else if (aci < -20f && aci >= -100f)
         {
-            yonOku = "◀ SOLA DÖN"; // Hedef solunda
+            yonMetni = "Sola Dön";
         }
         else
         {
-            yonOku = "▼ ARKANA DÖN"; // Hedef tamamen arkanda kalmışsa
+            yonMetni = "Arkana Dön";
         }
 
-        // 3. Ekrana Yazdır: "Müdür Kemal [45m] - ▶ SAĞA DÖN"
-        mesafeText.text = hedefIsmi + " [" + Mathf.RoundToInt(mesafe) + "m]  |  <color=yellow>" + yonOku + "</color>";
+        // 3. Ekrana Düz Metin Olarak Yazdır
+        // ÇIKTI ÖRNEĞİ: Müdür Kemal (107m) | İlerle
+        mesafeText.text = $"{hedefIsmi} ({Mathf.RoundToInt(mesafe)}m)  |  <color=yellow>{yonMetni}</color>";
     }
 }

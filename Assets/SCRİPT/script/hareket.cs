@@ -8,6 +8,9 @@ public class hareket : MonoBehaviour
     public float kosmaHizi = 6f;
     public float donmeHizi = 15f;
     public float yerCekimi = -9.81f;
+    
+    // İnteraksiyon kilidi için eklenen değişken
+    [HideInInspector] public bool hareketEdebilirMi = true; 
 
     [Header("Zıplama Ayarları")]
     public float ziplamaGucu = 5f;
@@ -40,13 +43,17 @@ public class hareket : MonoBehaviour
 
         bool comeldi = animator.GetBool("Comeldi");
 
-        // 1. GİRDİLERİ OKU
+        // 1. GİRDİLERİ OKU (HAYATİ DÜZELTME: hareketEdebilirMi false ise girdiler sıfırlanır)
         float yatay = 0f;
         float dikey = 0f;
-        if (klavye.wKey.isPressed) dikey += 1f;
-        if (klavye.sKey.isPressed) dikey -= 1f;
-        if (klavye.aKey.isPressed) yatay -= 1f;
-        if (klavye.dKey.isPressed) yatay += 1f;
+        
+        if (hareketEdebilirMi)
+        {
+            if (klavye.wKey.isPressed) dikey += 1f;
+            if (klavye.sKey.isPressed) dikey -= 1f;
+            if (klavye.aKey.isPressed) yatay -= 1f;
+            if (klavye.dKey.isPressed) yatay += 1f;
+        }
 
         Vector3 girdi = new Vector3(yatay, 0f, dikey).normalized;
 
@@ -56,13 +63,10 @@ public class hareket : MonoBehaviour
 
         Vector3 finalHareket = Vector3.zero;
 
-        if (!comeldi)
+        // Karakter hem çömelmemiş olacak hem de hareket etme yetkisi açık olacak
+        if (!comeldi && hareketEdebilirMi)
         {
-            // Koşma şartı: Shift basılı VE karakter hareket ediyor
             kosuyorMu = shiftBasili && girdi.magnitude > 0.1f;
-            
-            // HIZ TAKILMASINI ÖNLEYEN KESKİN GEÇİŞ: 
-            // Lerp kullanmıyoruz, Shift basılıysa net koşma hızı, bırakıldıysa net yürüme hızı!
             float anlikHiz = kosuyorMu ? kosmaHizi : yuruyusHizi;
 
             if (girdi.magnitude >= 0.1f)
@@ -76,7 +80,6 @@ public class hareket : MonoBehaviour
                 Vector3 hareketYonu = Quaternion.Euler(0f, hedefAci, 0f) * Vector3.forward;
                 smoothHareketYonu = Vector3.Lerp(smoothHareketYonu, hareketYonu, 20f * Time.deltaTime);
                 
-                // Kararsız hızı değil, direkt netleşen hızı çarpıyoruz
                 finalHareket = smoothHareketYonu.normalized * anlikHiz;
             }
             else
@@ -84,7 +87,7 @@ public class hareket : MonoBehaviour
                 smoothHareketYonu = Vector3.zero;
             }
 
-            // --- ZIPlAMA KISITLAMASI ---
+            // --- ZIPLAMA KISITLAMASI ---
             if (klavye.spaceKey.wasPressedThisFrame && controller.isGrounded && !kosuyorMu)
             {
                 dikeyHiz = ziplamaGucu;
@@ -107,11 +110,10 @@ public class hareket : MonoBehaviour
         finalHareket.y = dikeyHiz;
         controller.Move(finalHareket * Time.deltaTime);
 
-        // 4. ANIMATÖR KÜT GEÇİŞİ (Yavaşlığı Bitiren Kısım)
-        // Değerleri Lerp yapmadan direkt küt diye gönderiyoruz.
+        // 4. ANIMATÖR KÜT GEÇİŞİ
         float animHizi = kosuyorMu ? 1f : (girdi.magnitude > 0.1f ? 0.5f : 0f);
         
-        animator.SetFloat("Speed", animHizi); // Direkt hedef değeri vererek animasyon yumuşamasını sıfırladık
+        animator.SetFloat("Speed", animHizi); 
         animator.SetBool("isRunning", kosuyorMu);
 
         // 5. ÇÖMELME BOYUTLARI

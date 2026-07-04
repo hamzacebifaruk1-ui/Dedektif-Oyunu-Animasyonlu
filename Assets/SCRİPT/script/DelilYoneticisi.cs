@@ -93,15 +93,14 @@ public class DelilYoneticisi : MonoBehaviour
             MudurOdasindakiGoreviTamamla();
         }
 
-        if (bulunanDelilSayisi >= toplamDelilSayisi)
-            Invoke("GorevTamamlandi", 3.5f);
+        // DÜZELTME: Buradaki otomatik bitirme kaldırıldı. 
+        // Artık oyun Kemal ile son hesaplaşma bittiğinde SecimYoneticisi üzerinden bitecek!
     }
 
     void MudurOdasindakiGoreviTamamla()
     {
         Debug.Log("Müdürün odasındaki iki delil de toplandı! Yeni görev açılıyor...");
         
-        // HATA VEREN YER DÜZELTİLDİ: Senin orijinal 'OdaVePanoTamamla' fonksiyonun bağlandı
         if (GorevYoneticisi.Instance != null)
         {
             GorevYoneticisi.Instance.OdaVePanoTamamla(); 
@@ -149,7 +148,8 @@ public class DelilYoneticisi : MonoBehaviour
             delilSayaciText.text = bulunanDelilSayisi + "/" + toplamDelilSayisi + " Delil Bulundu";
     }
 
-    void GorevTamamlandi()
+    // Seçim ekranından önce istersen küçük bir ara panel açmak için bu fonksiyonları saklayabilirsin
+    public void GorevTamamlandiPaneliAc()
     {
         if (gorevTamamPanel != null) gorevTamamPanel.SetActive(true);
         Invoke("PaneliKapat", 2f);

@@ -29,9 +29,15 @@ public class DelilNesnesi : MonoBehaviour
             if (!GorevYoneticisi.Instance.ahmetleKonusuldu) return false;
         }
 
-        if (delilAdi.Contains("Kanca") || delilAdi.Contains("Tel"))
+        // Kanca arındırıldı, sadece Tel kontrolü aktif
+        if (delilAdi.Contains("Tel"))
         {
             if (!GorevYoneticisi.Instance.kemalPanikledi) return false;
+        }
+
+        if (delilAdi.Contains("Kamera") || delilAdi.Contains("Kaydı") || delilAdi.Contains("USB"))
+        {
+            if (!GorevYoneticisi.Instance.rizaItirafEtti) return false;
         }
 
         return !toplandiMi;
@@ -41,9 +47,17 @@ public class DelilNesnesi : MonoBehaviour
     {
         if (!ToplanabilirMi()) return;
 
+        // Eğer delil yerdeyse ve karakter eğilmediyse engelle. Masadaysa geçişe izin ver.
         if (delilKonumu == DelilKonumu.Yerde && !karakterEgildiMi) return; 
 
         toplandiMi = true;
+
+        // İşlem bittiğinde karakterin donup kalmaması için yürüme kilidini açıyoruz
+        hareket oyuncuScripti = FindFirstObjectByType<hareket>();
+        if (oyuncuScripti != null)
+        {
+            oyuncuScripti.hareketEdebilirMi = true;
+        }
 
         if (toplamaSesi != null)
             AudioSource.PlayClipAtPoint(toplamaSesi, transform.position);
@@ -60,13 +74,11 @@ public class DelilNesnesi : MonoBehaviour
             {
                 GorevYoneticisi.Instance.IlacKutusuBulundu();
             }
-            // DÜZELTME: Defter ve Not kısmı buradan kaldırıldı, yetki DelilYoneticisi'ne devredildi!
-            else if (delilAdi.Contains("Kanca") || delilAdi.Contains("Tel"))
+            else if (delilAdi.Contains("Tel"))
             {
                 GorevYoneticisi.Instance.kirikTelAlindi = true;
-                GorevYoneticisi.Instance.kirikKancaAlindi = true;
                 GorevYoneticisi.Instance.TeknikDelillerTamamla();
-                Debug.Log("[SİSTEM] Teknik deliller başarıyla eşitlendi ve yeni görev açıldı!");
+                Debug.Log("[SİSTEM] Teknik delil (Vinç Teli) başarıyla alındı!");
             }
             else if (delilAdi.Contains("Kamera") || delilAdi.Contains("Kaydı") || delilAdi.Contains("USB"))
             {

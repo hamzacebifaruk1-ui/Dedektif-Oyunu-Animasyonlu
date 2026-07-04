@@ -43,7 +43,6 @@ public class OyuncuInteraksiyon : MonoBehaviour
 
     void YakinDelilKontrol()
     {
-        // Hafıza kilitlenmesini önlemek için her aramadan önce en yakın delili sıfırlayıp baştan tarıyoruz
         Collider[] yakinlar = Physics.OverlapSphere(transform.position, etkilesimMesafesi);
 
         DelilNesnesi enYakinDelil = null;
@@ -57,7 +56,6 @@ public class OyuncuInteraksiyon : MonoBehaviour
             if (delil == null)
                 delil = col.GetComponentInParent<DelilNesnesi>();
 
-            // Eğer sahdede bir delil nesnesi varsa ve şu anki görev durumuna göre TOPLANABİLİRSE
             if (delil != null && delil.ToplanabilirMi())
             {
                 float mesafe = Vector3.Distance(transform.position, delil.transform.position);
@@ -69,16 +67,23 @@ public class OyuncuInteraksiyon : MonoBehaviour
             }
         }
 
-        // Güncel yakındaki delili ata
         yakinDelil = enYakinDelil;
 
-        // UI Güncelleme Alanı
         if (yakinDelil != null)
         {
             if (ipucuText != null)
             {
                 ipucuText.gameObject.SetActive(true);
-                ipucuText.text = "E - İncele";
+                
+                // --- MASADA VE YERDE AYRIMI ---
+                if (yakinDelil.delilKonumu == DelilNesnesi.DelilKonumu.Masada)
+                {
+                    ipucuText.text = "F - İncele";
+                }
+                else
+                {
+                    ipucuText.text = "E - İncele";
+                }
             }
         }
         else
@@ -95,7 +100,8 @@ public class OyuncuInteraksiyon : MonoBehaviour
         Keyboard klavye = Keyboard.current;
         if (klavye == null) return;
 
-        if (klavye.eKey.wasPressedThisFrame && !incelemeModu && !alModu && yakinDelil != null)
+        // E tuşu yalnızca YERDEKİ deliller için çalışır
+        if (klavye.eKey.wasPressedThisFrame && !incelemeModu && !alModu && yakinDelil != null && yakinDelil.delilKonumu == DelilNesnesi.DelilKonumu.Yerde)
         {
             incelemeModu = true;
             if (ipucuText != null) ipucuText.gameObject.SetActive(false);
@@ -104,6 +110,10 @@ public class OyuncuInteraksiyon : MonoBehaviour
             {
                 animator.SetBool("Comeldi", true);
             }
+
+            // Toplama anında oyuncunun hareket etmesini engellemek için kilidi kapatıyoruz
+            hareket oyuncuScripti = GetComponent<hareket>();
+            if (oyuncuScripti != null) oyuncuScripti.hareketEdebilirMi = false;
 
             Invoke("IncelemeAnimasyonuBitti", 1.5f);
         }
@@ -125,23 +135,37 @@ public class OyuncuInteraksiyon : MonoBehaviour
         Keyboard klavye = Keyboard.current;
         if (klavye == null) return;
 
-        if (klavye.fKey.wasPressedThisFrame && alModu)
+        if (yakinDelil == null) return;
+
+        // 1. MASADAKİ DELİL KONTROLÜ (Direkt ayakta F ile toplama)
+        if (yakinDelil.delilKonumu == DelilNesnesi.DelilKonumu.Masada)
         {
-            alModu = false;
-            if (ipucuText != null)
+            if (klavye.fKey.wasPressedThisFrame && !incelemeModu && !alModu)
             {
-                ipucuText.gameObject.SetActive(false);
-            }
+                if (ipucuText != null) ipucuText.gameObject.SetActive(false);
+                
+                // Ayakta aldığımız için hareket kilidini koyup hemen toplatıyoruz
+                hareket oyuncuScripti = GetComponent<hareket>();
+                if (oyuncuScripti != null) oyuncuScripti.hareketEdebilirMi = false;
 
-            if (animator != null)
-            {
-                animator.SetBool("Comeldi", false);
+                yakinDelil.Topla(false); // Karakter eğilmedi -> false
+                yakinDelil = null;
             }
-
-            if (yakinDelil != null)
+        }
+        // 2. YERDEKİ DELİL KONTROLÜ (Eğildikten sonra F ile toplama)
+        else if (yakinDelil.delilKonumu == DelilNesnesi.DelilKonumu.Yerde)
+        {
+            if (klavye.fKey.wasPressedThisFrame && alModu)
             {
-                // Delil yerdeyse eğilme kontrolünü başarıyla geçmesi için true gönderiyoruz
-                yakinDelil.Topla(true); 
+                alModu = false;
+                if (ipucuText != null) ipucuText.gameObject.SetActive(false);
+
+                if (animator != null)
+                {
+                    animator.SetBool("Comeldi", false);
+                }
+
+                yakinDelil.Topla(true); // Karakter eğildi -> true
                 yakinDelil = null;
             }
         }
