@@ -109,7 +109,7 @@ public class SecimYoneticisi : MonoBehaviour
             }
 
             // 1 Dakika bekle ve sadece Ana Menü butonunu aç
-            yield return new WaitForSeconds(20f);
+            yield return new WaitForSeconds(10f);
             if (dogruAnaMenuButonu != null) dogruAnaMenuButonu.SetActive(true);
         }
         // 3. Yanlış Seçim Mantığı (Deli Rıza veya Kaza)
