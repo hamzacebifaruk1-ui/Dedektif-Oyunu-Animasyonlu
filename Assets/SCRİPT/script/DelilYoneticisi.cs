@@ -8,7 +8,7 @@ public class DelilYoneticisi : MonoBehaviour
     public static DelilYoneticisi Instance;
 
     [Header("Delil Ayarları")]
-    public int toplamDelilSayisi = 5;
+    public int toplamDelilSayisi = 11; // 5 Gerçek + 6 Sahte = 11 Toplam Nesne
     private int bulunanDelilSayisi = 0;
 
     [Header("UI Elemanları")]
@@ -30,6 +30,7 @@ public class DelilYoneticisi : MonoBehaviour
     {
         switch (delilAdi)
         {
+            // --- GERÇEK DELİLLER ---
             case "Kırık Vinç Kancası":
                 return "Vincin kancasındaki derin çatlaklar gizlenmeye çalışılmış. Kaza göz göre göre gelmiş.";
             case "Yırtık Bakım Defteri":
@@ -40,8 +41,22 @@ public class DelilYoneticisi : MonoBehaviour
                 return "Murat'ın baretine sıkıştırılan not: 'Konuşursan sonun limanın dibi olur' yazıyor.";
             case "Güvenlik Kamera Kaydı":
                 return "Gece 02:00 kayıtları. Müdür Kemal'in elinde bir aletle vinç dairesine girdiğini gösteriyor.";
-            case "İlaç Kutusu":
+            case "İlaç":
                 return "Murat'ın kullandığı ağır göz ilacı. Gece vardiyasında çalışması yasal olarak imkansızdı.";
+
+            // --- SAHTE DELİLLER ---
+            case "Kırık Kahve Kupası":
+                return "İçinde sadece kahve tortusu var. Kazayla doğrudan bir bağı yok.";
+            case "Paslı Çelik Halat":
+                return "Aylardır burada çürümeye bırakılmış eski bir parça, olayla ilgisiz.";
+            case "Eski Telsiz Bataryası":
+                return "Sıradan bir batarya arızası, Murat'ın düşüş sebebiyle bağı yok.";
+            case "Liman Giriş Kartı":
+                return "Üç gün önce kaybolmuş sıradan bir kart. Bizi şaşırtmak için bırakılmış olabilir.";
+            case "Kirli İş Eldiveni":
+                return "Standart motor yağı lekeleri taşıyor, şüpheli bir iz yok.";
+            case "Araba Anahtarı":
+                return "Sıradan bir binek araç anahtarı, cinayet planıyla alakası yok.";
             default:
                 return "Bu delil inceleniyor...";
         }
@@ -76,7 +91,6 @@ public class DelilYoneticisi : MonoBehaviour
         bulunanDelilSayisi++;
         DelilSayaciniGuncelle();
 
-        // --- MÜDÜRÜN ODASI ÖZEL KONTROLÜ ---
         if (delilAdi == "Yırtık Bakım Defteri")
         {
             yirtikDefterBulundu = true;
@@ -86,21 +100,15 @@ public class DelilYoneticisi : MonoBehaviour
             anonimNotBulundu = true;
         }
 
-        // İKİ DELİL DE BULUNDU MU?
         if (yirtikDefterBulundu && anonimNotBulundu && !yeniGorevTetiklendi)
         {
             yeniGorevTetiklendi = true;
             MudurOdasindakiGoreviTamamla();
         }
-
-        // DÜZELTME: Buradaki otomatik bitirme kaldırıldı. 
-        // Artık oyun Kemal ile son hesaplaşma bittiğinde SecimYoneticisi üzerinden bitecek!
     }
 
     void MudurOdasindakiGoreviTamamla()
     {
-        Debug.Log("Müdürün odasındaki iki delil de toplandı! Yeni görev açılıyor...");
-        
         if (GorevYoneticisi.Instance != null)
         {
             GorevYoneticisi.Instance.OdaVePanoTamamla(); 
@@ -148,7 +156,6 @@ public class DelilYoneticisi : MonoBehaviour
             delilSayaciText.text = bulunanDelilSayisi + "/" + toplamDelilSayisi + " Delil Bulundu";
     }
 
-    // Seçim ekranından önce istersen küçük bir ara panel açmak için bu fonksiyonları saklayabilirsin
     public void GorevTamamlandiPaneliAc()
     {
         if (gorevTamamPanel != null) gorevTamamPanel.SetActive(true);
