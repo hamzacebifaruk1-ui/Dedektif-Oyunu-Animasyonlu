@@ -177322,7 +177322,7 @@ MonoBehaviour:
   toplamaSesi: {fileID: 8300000, guid: e98feb6b42c08724faac282bdba1fb03, type: 3}
   delilKonumu: 0
   delilPrefab: {fileID: 919132149155446097, guid: 2422a1ba3c473394cab7c983bb9e1ffb, type: 3}
-  incelemeBoyutu: 4
+  incelemeBoyutu: 7
   incelemeMesafesi: 0.3
 --- !u!65 &1364140457
 BoxCollider:
@@ -238156,7 +238156,7 @@ MonoBehaviour:
   toplamaSesi: {fileID: 8300000, guid: 65a2ef1af032f3c4d99dbc272cee1d50, type: 3}
   delilKonumu: 1
   delilPrefab: {fileID: 100000, guid: efe3c449ba21ecc49bdce006a5e898b0, type: 3}
-  incelemeBoyutu: 20
+  incelemeBoyutu: 27
   incelemeMesafesi: 0.5
 --- !u!65 &1943481486
 BoxCollider:
