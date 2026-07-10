@@ -37,7 +37,6 @@ public class MinimapYonetici : MonoBehaviour
 
         Vector2 oyuncuPiksel = DunyayiPikseleCevir(dedektifTransform.position);
 
-        // Harita, oyuncu ters yönünde kayar (mevcut çalışan mantık)
         haritaDokusuPaneli.anchoredPosition = -oyuncuPiksel;
 
         if (oyuncuOkIkonu != null)
@@ -46,8 +45,6 @@ public class MinimapYonetici : MonoBehaviour
             oyuncuOkIkonu.localRotation = Quaternion.Euler(0, 0, -karakterYRotasyonu);
         }
 
-        // NPC ikonları: kendi haritadaki piksel konumu - oyuncunun ofseti
-        // (oyuncu her zaman ortada sabit olduğu için NPC'ler buna göre bağıl konumlanır)
         foreach (var npc in npcIkonlari)
         {
             if (npc.npcTransform == null || npc.ikonRect == null) continue;
@@ -57,8 +54,6 @@ public class MinimapYonetici : MonoBehaviour
         }
     }
 
-    // Dünya pozisyonunu, Harita_Dokusu üzerindeki piksel konumuna çevirir.
-    // Eksen takası: dünya Z -> harita X, dünya X -> harita Y (senin kalibrasyonuna göre bulduğumuz doğru eşleşme)
     Vector2 DunyayiPikseleCevir(Vector3 dunyaPozisyonu)
     {
         Vector3 a = kalibrasyonA_Dunya.position;
@@ -77,5 +72,16 @@ public class MinimapYonetici : MonoBehaviour
         float haritaY = (pikselY - gorselCozunurluk.y / 2f) * olcekY;
 
         return new Vector2(haritaX, haritaY);
+    }
+
+    public void NpcIkonlariniGoster(bool durum)
+    {
+        foreach (var npc in npcIkonlari)
+        {
+            if (npc.ikonRect != null)
+            {
+                npc.ikonRect.gameObject.SetActive(durum);
+            }
+        }
     }
 }

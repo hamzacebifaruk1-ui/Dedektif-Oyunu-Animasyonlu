@@ -3665,37 +3665,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 7643229109163234770, guid: f6822674b320b6d4b940a1e9bb1b2d3e, type: 3}
---- !u!1 &27911291
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 27911292}
-  m_Layer: 0
-  m_Name: Dedektiflik
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &27911292
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 27911291}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 16.73056, y: -5.0294, z: 110.77182}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &28010667 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -5020538201559299703, guid: d74cd369ba351294e9c64ba28900dd04, type: 3}
@@ -16010,6 +15979,9 @@ RectTransform:
   m_Children:
   - {fileID: 1276974618}
   - {fileID: 837512486}
+  - {fileID: 155345155}
+  - {fileID: 899304588}
+  - {fileID: 1777204369}
   m_Father: {fileID: 666041870}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -20205,6 +20177,142 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -4196538131733500859, guid: d74cd369ba351294e9c64ba28900dd04, type: 3}
+--- !u!1 &155345152
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 155345155}
+  - component: {fileID: 155345154}
+  - component: {fileID: 155345153}
+  m_Layer: 0
+  m_Name: yardimciIpuclariText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &155345153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155345152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: New Text
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 9d24e6b3ecd1d2b479a31d3d0e7b1f9e, type: 2}
+  m_sharedMaterial: {fileID: 21148088844906328, guid: 9d24e6b3ecd1d2b479a31d3d0e7b1f9e, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 36
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 256
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: -8.572403, w: -110.69405}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &155345154
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155345152}
+  m_CullTransparentMesh: 1
+--- !u!224 &155345155
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155345152}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 125289832}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 173}
+  m_SizeDelta: {x: 200, y: 146.9246}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!1 &155548769 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -4948639620136798628, guid: d74cd369ba351294e9c64ba28900dd04, type: 3}
@@ -25512,32 +25620,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NpcDiyalog
   npcAdi: "\u0130\u015F\xE7i Ahmet"
-  asama1Konusmalar:
-  - "\"Murat iyi operat\xF6rd\xFC beyim. Ama o gece \xE7ok yorgundu, kendi r\u0131zas\u0131yla
-    \xE7\u0131kt\u0131, aya\u011F\u0131 kayd\u0131 herhalde. Polis raporu da \xF6yle
-    yazd\u0131 zaten, bizi bula\u015Ft\u0131rma.\""
-  asama1Sesleri:
-  - {fileID: 8300000, guid: 756b7df8d7d0a2d42b097208135130cc, type: 3}
-  asama2Konusmalar:
-  - " \"Tamam, sus! M\xFCd\xFCr Kemal duyacak... Murat \u015Fantiyedeki usuls\xFCzl\xFCkler
-    i\xE7in sendikay\u0131 \xE7a\u011F\u0131racakt\u0131. O gece \xE7ok hastayd\u0131,
-    'Beni vince \xE7\u0131karmay\u0131n' diye yalvard\u0131. M\xFCd\xFCr eline bu
-    \u015Fi\u015Feyi tutu\u015Fturdu, 'Bunu i\xE7eceksin...' dedi. Murat yukar\u0131
-    \xE7\u0131kt\u0131\u011F\u0131nda g\xF6zleri kapan\u0131yordu!\""
-  asama2Sesleri:
-  - {fileID: 8300000, guid: 4db27a09fc3b4de4e9c83d83446ee71b, type: 3}
-  asama3Konusmalar:
-  - "Liman buralar dedektif, her yer pasl\u0131 halat dolu. Ben m\xFChendis de\u011Filim,
-    halattan anlamam.\""
-  asama3Sesleri:
-  - {fileID: 8300000, guid: 7fbc8fa3cdb0f4248988f2b5f76d5220, type: 3}
-  asama4Konusmalar:
-  - "\"Demek telin bilerek kesildi\u011Fini anlad\u0131n... \u015Eefim, o gece \u015Fantiyede
-    yabanc\u0131 bir araba g\xF6rd\xFCm. G\xFCvenlik R\u0131za'n\u0131n kul\xFCbesine
-    do\u011Fru gidiyordu. R\u0131za paray\u0131 \xE7ok sever, m\xFCd\xFCr\xFCn pis
-    i\u015Flerini de hep o temizler. Dikkat et, R\u0131za tehlikeli adamd\u0131r.\""
-  asama4Sesleri:
-  - {fileID: 8300000, guid: 268fc1f2e9159194d91bcbdba8e57bdd, type: 3}
+  etkilesimMesafesi: 3
+  ilkYalanlarDiyalogu: []
+  yuzlesmeSuclamaDiyalogu: []
 --- !u!64 &191112391
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -44738,7 +44823,7 @@ GameObject:
   - component: {fileID: 366726545}
   - component: {fileID: 366726544}
   m_Layer: 5
-  m_Name: NpcAdiText
+  m_Name: KonusmaciAdiText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45486,7 +45571,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HaritaRotaCizici
   baslangicNoktasi: {fileID: 517761361}
-  aktifHedef: {fileID: 1008300814}
+  aktifHedef: {fileID: 0}
   cizgiCizici: {fileID: 303738864}
   haritaPanelRect: {fileID: 1598382990}
   kalibrasyonA_Dunya: {fileID: 801870962}
@@ -59483,23 +59568,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OyuncuInteraksiyon
   etkilesimMesafesi: 2
   ipucuText: {fileID: 98610357}
---- !u!114 &517761367
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 517761359}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 679fe7e21ddc23f49b49ea4272290f87, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DiyalogYoneticisi
-  diyalogPanel: {fileID: 1200705051}
-  npcAdiText: {fileID: 366726544}
-  konusmaText: {fileID: 830227143}
-  konusIpucu: {fileID: 993792341}
-  etkilesimMesafesi: 2.5
 --- !u!114 &517761368
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75882,6 +75950,7 @@ RectTransform:
   - {fileID: 371355144}
   - {fileID: 1772977322}
   - {fileID: 125289832}
+  - {fileID: 1287621109}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -75937,7 +76006,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HaritaRotaCizici
   baslangicNoktasi: {fileID: 517761361}
-  aktifHedef: {fileID: 1008300814}
+  aktifHedef: {fileID: 0}
   cizgiCizici: {fileID: 2024351115}
   haritaPanelRect: {fileID: 262569495}
   kalibrasyonA_Dunya: {fileID: 801870962}
@@ -88255,7 +88324,7 @@ GameObject:
   - component: {fileID: 778720531}
   - component: {fileID: 778720530}
   m_Layer: 5
-  m_Name: GorevMetniText
+  m_Name: GorevYazisi
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -92693,12 +92762,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DelilIncelemeSistemi
   incelemePaneli: {fileID: 125289831}
   delilAdiText: {fileID: 837512484}
+  yardimciIpuclariText: {fileID: 155345153}
   anaOyunKamerasi: {fileID: 330585545}
   incelemeKamerasi: {fileID: 22945020}
-  dondurmeHizi: 5
-  zoomHizi: 4
-  minimumMesafe: 0.4
-  maksimumMesafe: 4
+  dondurmeHizi: 0.2
+  zoomHizi: 15
+  minimumMesafe: 0.05
+  maksimumMesafe: 5
+  gecerliDelilGercekMi: 1
 --- !u!4 &821800795
 Transform:
   m_ObjectHideFlags: 0
@@ -93544,7 +93615,7 @@ GameObject:
   - component: {fileID: 830227144}
   - component: {fileID: 830227143}
   m_Layer: 5
-  m_Name: 'KonusmaText '
+  m_Name: DiyalogMetniText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -94413,7 +94484,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -94445,7 +94516,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: -237.91998, w: -127.152565}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -94475,8 +94546,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 109}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 200, y: 60}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!1 &839804880 stripped
 GameObject:
@@ -100387,7 +100458,7 @@ GameObject:
   - component: {fileID: 890392753}
   - component: {fileID: 890392754}
   m_Layer: 5
-  m_Name: DelilSayaciText
+  m_Name: DelilYazisi
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -100409,7 +100480,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: 12.5}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 300, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &890392749
@@ -100432,7 +100503,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 0/5 Delil Bulundu
+  m_text: 'Toplanan Delil: 0 / 5'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 9ad269c99dcf42b7aedefd83dd5a7b9d, type: 2}
@@ -100497,7 +100568,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -76.89389, w: -36.09231}
+  m_margin: {x: 0, y: 0, z: -111.54193, w: -36.09231}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -101536,6 +101607,142 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 2693697630890315787, guid: d74cd369ba351294e9c64ba28900dd04, type: 3}
+--- !u!1 &899304587
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 899304588}
+  - component: {fileID: 899304590}
+  - component: {fileID: 899304589}
+  m_Layer: 0
+  m_Name: Kontrol Ipucu Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &899304588
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 899304587}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 125289832}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 163.7}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 1, y: 0.5}
+--- !u!114 &899304589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 899304587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: New Text
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 36
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 256
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: -152.64394}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &899304590
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 899304587}
+  m_CullTransparentMesh: 1
 --- !u!1 &900289328 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1996187328709343828, guid: d74cd369ba351294e9c64ba28900dd04, type: 3}
@@ -112782,37 +112989,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
---- !u!1 &1008300813
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1008300814}
-  m_Layer: 0
-  m_Name: ' Test_Hedef'
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1008300814
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1008300813}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6, y: -4.96, z: 120.6}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1009558297 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1595465639827676337, guid: d74cd369ba351294e9c64ba28900dd04, type: 3}
@@ -125659,7 +125835,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DelilNesnesi
   delilAdi: "\u0130la\xE7"
-  toplamaSesi: {fileID: 8300000, guid: cea101da476e59d44aef78b3f3c922c2, type: 3}
+  toplamaSesi: {fileID: 8300000, guid: 9789eb505e7d26f4f9e51bb417af880f, type: 3}
   delilKonumu: 0
   delilPrefab: {fileID: 1126991253}
   incelemeBoyutu: 1
@@ -163498,7 +163674,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DelilNesnesi
   delilAdi: "G\xFCvenlik Kamera Kayd\u0131"
-  toplamaSesi: {fileID: 8300000, guid: 09de00d02029d444fa081b40cd7d3396, type: 3}
+  toplamaSesi: {fileID: 8300000, guid: f42ee16146d28ac48aadf0c3f71e6a44, type: 3}
   delilKonumu: 1
   delilPrefab: {fileID: 919132149155446097, guid: 376f7082251376d45924d74a676a5f47, type: 3}
   incelemeBoyutu: 0.2
@@ -165266,36 +165442,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NpcDiyalog
   npcAdi: "Liman M\xFCd\xFCr\xFC Kemal"
-  asama1Konusmalar:
-  - "Bu \u015Fantiye art\u0131klar\u0131yla m\u0131 beni su\xE7luyorsun dedektif?
-    Polis raporu ortada: \u0130\u015F\xE7i ihmali! \u015Eimdi o dedektiflik rozetini
-    de al ve \u015Fantiyemden defol, avukatlar\u0131m seninle ilgilenecek!\""
-  asama1Sesleri:
-  - {fileID: 8300000, guid: 887eecc3807e67346b8b70b0a84b6277, type: 3}
-  asama2Konusmalar:
-  - "\"Ne? G\xF6z ilac\u0131 m\u0131? Ne demek Murat'\u0131n g\xF6zleri az g\xF6r\xFCyordu?
-    Ben onun gece vardiyas\u0131na kald\u0131\u011F\u0131n\u0131 bile bilmiyordum!
-    \u0130\u015F\xE7iler kendi aralar\u0131nda mesaiyi ayarlam\u0131\u015F olmal\u0131,
-    benim su\xE7um yok! Hem odamdaki evraklara baksayd\u0131n\u0131z her \u015Feyin
-    kusursuz oldu\u011Funu g\xF6r\xFCrd\xFCn\xFCz, gidin kendi g\xF6zlerinizle bak\u0131n!\""
-  asama2Sesleri:
-  - {fileID: 8300000, guid: 9a131f44a73412648b6c8c83799ecc31, type: 3}
-  asama3Konusmalar:
-  - "\"O defter... O notu kim yazm\u0131\u015F?! Tamam, kabul ediyorum; Murat'\u0131
-    i\u015Ften atmakla tehdit ettim \xE7\xFCnk\xFC o gece o vince birinin \xE7\u0131kmas\u0131
-    gerekiyordu! Ama telin kopaca\u011F\u0131n\u0131 ben bilemezdim! Git o zaman
-    o malzemeleri getiren firmaya sor, sahnede k\u0131r\u0131k vin\xE7 kancas\u0131
-    ve k\u0131r\u0131k vin\xE7 teli duruyor. Onlar\u0131 incele, benim su\xE7um olmad\u0131\u011F\u0131n\u0131
-    g\xF6receksin!\""
-  asama3Sesleri:
-  - {fileID: 8300000, guid: 2e9b25a9ba859e0468ea9af6d44ced63, type: 3}
-  asama4Konusmalar:
-  - "\"Beni anla dedektif... Holding arkamdayd\u0131. Murat sendikay\u0131 getirseydi
-    milyarl\u0131k liman projesi iptal olacakt\u0131. Valfi gev\u015Fetip onu tehditle
-    yukar\u0131 \xE7\u0131kard\u0131k ki hidrolik bo\u015Fals\u0131n ve d\xFC\u015F\xFC\u015F
-    teknik ar\u0131za g\xF6r\xFCns\xFCn... Mecburdum, her \u015Feyi ben yapt\u0131m!\""
-  asama4Sesleri:
-  - {fileID: 8300000, guid: a9837b90ff7fc074d917c2ef296bab51, type: 3}
+  etkilesimMesafesi: 3
+  ilkYalanlarDiyalogu: []
+  yuzlesmeSuclamaDiyalogu: []
 --- !u!82 &1256852394
 AudioSource:
   m_ObjectHideFlags: 0
@@ -168720,6 +168869,142 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -7466724026349251220, guid: d74cd369ba351294e9c64ba28900dd04, type: 3}
+--- !u!1 &1287621108
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1287621109}
+  - component: {fileID: 1287621111}
+  - component: {fileID: 1287621110}
+  m_Layer: 5
+  m_Name: EtkilesimYazisi
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1287621109
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1287621108}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 666041870}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1287621110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1287621108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: "\"[E] Konu\u015Fmak i\xE7in bas\""
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 36
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 1
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 256
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: -98.12423, w: -52.841995}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1287621111
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1287621108}
+  m_CullTransparentMesh: 1
 --- !u!1 &1289167290 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4068372481462396592, guid: e9d64c834b37b174092cdfe143341d11, type: 3}
@@ -178354,18 +178639,6 @@ PrefabInstance:
       addedObject: {fileID: 1373100372}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 86b717569d4e3054980c6ddecad92212, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1373100374}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 86b717569d4e3054980c6ddecad92212, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1373100376}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 86b717569d4e3054980c6ddecad92212, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1373100377}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 86b717569d4e3054980c6ddecad92212, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1373100379}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 86b717569d4e3054980c6ddecad92212, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1373100381}
     - targetCorrespondingSourceObject: {fileID: -4819223349682164798, guid: 86b717569d4e3054980c6ddecad92212, type: 3}
       insertIndex: -1
@@ -179229,112 +179502,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28adb243bd528864987839f5770a58ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NpcDiyalog
-  npcAdi: "G\xFCvenlik G\xF6revlisi R\u0131za"
-  asama1Konusmalar:
-  - "\"Dedektif bey, o saatte \u015Fantiyenin ana trafosunda patlama oldu, elektrikler
-    kesikti. Sistem hi\xE7bir \u015Fey kaydetmedi, jenerat\xF6r de devreye girmedi.\""
-  asama1Sesleri:
-  - {fileID: 8300000, guid: 60b67fd361a25b043a6c46d0ec650271, type: 3}
-  asama2Konusmalar:
-  - ": \"M\xFCd\xFCr Kemal beni mahveder... Kaza sabah\u0131 silahla kul\xFCbeye
-    geldi. 'O saatlerde elektrik kesildi diye rapor yazacaks\u0131n' dedi. Kay\u0131tlar\u0131
-    sildim ama vicdan azab\u0131ndan bir kopyas\u0131n\u0131 ald\u0131m. G\xF6r\xFCnt\xFClerde
-    M\xFCd\xFCr\xFCn sa\u011F kolu elinde ingiliz anahtar\u0131yla arkas\u0131ndan
-    yukar\u0131 \xE7\u0131k\u0131yordu!\""
-  asama2Sesleri:
-  - {fileID: 8300000, guid: edbd770394131a54da8659fceb8e2b45, type: 3}
-  asama3Konusmalar: []
-  asama3Sesleri: []
-  asama4Konusmalar: []
-  asama4Sesleri: []
---- !u!64 &1373100374
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1373100369}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
---- !u!64 &1373100376
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1373100369}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
---- !u!64 &1373100377
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1373100369}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
---- !u!64 &1373100379
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1373100369}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
+  npcAdi: "G\xFCvenlik R\u0131za"
+  etkilesimMesafesi: 3
+  ilkYalanlarDiyalogu: []
+  yuzlesmeSuclamaDiyalogu: []
 --- !u!114 &1373100381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186865,6 +187036,7 @@ MonoBehaviour:
   bildirimBaslik: {fileID: 859459042}
   bildirimIsim: {fileID: 1515588157}
   bildirimNot: {fileID: 615645008}
+  dedektifSesKaynagi: {fileID: 0}
 --- !u!4 &1450099072
 Transform:
   m_ObjectHideFlags: 0
@@ -221305,6 +221477,41 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -4469221135441802504, guid: d74cd369ba351294e9c64ba28900dd04, type: 3}
+--- !u!1 &1777204368
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1777204369}
+  m_Layer: 0
+  m_Name: Pivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1777204369
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777204368}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 125289832}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1778680312 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4213797329570630696, guid: d74cd369ba351294e9c64ba28900dd04, type: 3}
@@ -243951,6 +244158,158 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2000513477}
   m_Mesh: {fileID: -8203747128427966436, guid: d74cd369ba351294e9c64ba28900dd04, type: 3}
+--- !u!1 &2000710441
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2000710443}
+  - component: {fileID: 2000710442}
+  - component: {fileID: 2000710444}
+  m_Layer: 0
+  m_Name: DiyalogYoneticisiObjesi
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2000710442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2000710441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 679fe7e21ddc23f49b49ea4272290f87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DiyalogYoneticisi
+  diyalogPaneli: {fileID: 1200705051}
+  konusmaciText: {fileID: 366726544}
+  diyalogText: {fileID: 830227143}
+  gorevYazisiText: {fileID: 778720530}
+  delilYazisiText: {fileID: 890392749}
+  audioSource: {fileID: 2000710444}
+  yaziHizi: 0.03
+  ilkRotaHedefi: {fileID: 1373100368}
+  diyalogAktif: 0
+  gorevHazir: 0
+--- !u!4 &2000710443
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2000710441}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 45.23673, y: -3.49873, z: 72.93121}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &2000710444
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2000710441}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &2001199846 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6689302845262395406, guid: d74cd369ba351294e9c64ba28900dd04, type: 3}
@@ -260669,9 +261028,6 @@ PrefabInstance:
       addedObject: {fileID: 517761366}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2f5d43c7fd88d71428fd467853c79735, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 517761367}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2f5d43c7fd88d71428fd467853c79735, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 517761368}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2f5d43c7fd88d71428fd467853c79735, type: 3}
       insertIndex: -1
@@ -261899,7 +262255,6 @@ SceneRoots:
   - {fileID: 801870962}
   - {fileID: 356069371}
   - {fileID: 1045465520}
-  - {fileID: 1008300814}
-  - {fileID: 27911292}
   - {fileID: 821800795}
   - {fileID: 22945021}
+  - {fileID: 2000710443}

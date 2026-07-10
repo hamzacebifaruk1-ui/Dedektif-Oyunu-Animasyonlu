@@ -41,32 +41,44 @@ public class OyuncuInteraksiyon : MonoBehaviour
         FInputKontrol();
     }
 
-    void YakinDelilKontrol()
+  void YakinDelilKontrol()
     {
         Collider[] yakinlar = Physics.OverlapSphere(transform.position, etkilesimMesafesi);
 
         DelilNesnesi enYakinDelil = null;
         float enYakinMesafe = etkilesimMesafesi;
 
-        foreach (Collider col in yakinlar)
+        foreach (Collider nesneCollider in yakinlar) // 'col' yerine 'nesneCollider' yaparak çakışmayı önledik
         {
-            if (col.transform == transform || col.transform.IsChildOf(transform)) continue;
+            if (nesneCollider.transform == transform || nesneCollider.transform.IsChildOf(transform)) continue;
 
-            DelilNesnesi delil = col.GetComponent<DelilNesnesi>();
+            DelilNesnesi delil = nesneCollider.GetComponent<DelilNesnesi>();
             if (delil == null)
-                delil = col.GetComponentInParent<DelilNesnesi>();
+                delil = nesneCollider.GetComponentInParent<DelilNesnesi>();
 
-            if (delil != null && delil.ToplanabilirMi())
+            if (delil != null)
             {
-                float mesafe = Vector3.Distance(transform.position, delil.transform.position);
-                if (mesafe < enYakinMesafe)
+                // KONSOLA BİLGİ YAZDIR: Nesneyi algılıyor mu ve Toplanabilir mi?
+                Debug.Log("Sistem nesneyi gördü: " + delil.name + " | Toplanabilir Mi: " + delil.ToplanabilirMi());
+
+                if (delil.ToplanabilirMi())
                 {
-                    enYakinMesafe = mesafe;
-                    enYakinDelil = delil;
+                    float mesafe = Vector3.Distance(transform.position, delil.transform.position);
+                    if (mesafe < enYakinMesafe)
+                    {
+                        enYakinMesafe = mesafe;
+                        enYakinDelil = delil;
+                    }
                 }
             }
         }
 
+        yakinlarEnYakinAyarla(enYakinDelil);
+    }
+
+    // Kodun alt kısmıyla temiz bağlanması için yardımcı metot
+    void yakinlarEnYakinAyarla(DelilNesnesi enYakinDelil)
+    {
         yakinDelil = enYakinDelil;
 
         if (yakinDelil != null)
@@ -75,7 +87,6 @@ public class OyuncuInteraksiyon : MonoBehaviour
             {
                 ipucuText.gameObject.SetActive(true);
                 
-                // --- MASADA VE YERDE AYRIMI ---
                 if (yakinDelil.delilKonumu == DelilNesnesi.DelilKonumu.Masada)
                 {
                     ipucuText.text = "F - İncele";

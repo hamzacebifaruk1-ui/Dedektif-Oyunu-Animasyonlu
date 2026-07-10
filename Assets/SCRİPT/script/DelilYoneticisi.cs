@@ -8,164 +8,162 @@ public class DelilYoneticisi : MonoBehaviour
     public static DelilYoneticisi Instance;
 
     [Header("Delil Ayarları")]
-    public int toplamDelilSayisi = 11; // 5 Gerçek + 6 Sahte = 11 Toplam Nesne
+    public int toplamDelilSayisi = 11; // 5 Gerçek + 6 Sahte = 11 Toplam Nesne[cite: 3]
     private int bulunanDelilSayisi = 0;
 
     [Header("UI Elemanları")]
-    public TextMeshProUGUI delilSayaciText;
-    public GameObject gorevTamamPanel;
+    public TextMeshProUGUI delilSayaciText; //[cite: 3]
+    public GameObject gorevTamamPanel; //[cite: 3]
 
     [Header("Delil Bildirim Paneli")]
-    public GameObject bildirimPanel;
-    public TextMeshProUGUI bildirimBaslik;
-    public TextMeshProUGUI bildirimIsim;
-    public TextMeshProUGUI bildirimNot;
+    public GameObject bildirimPanel; //[cite: 3]
+    public TextMeshProUGUI bildirimBaslik; //[cite: 3]
+    public TextMeshProUGUI bildirimIsim; //[cite: 3]
+    public TextMeshProUGUI bildirimNot; //[cite: 3]
 
-    [Header("Müdürün Odası Görev Kontrolü")]
-    private bool yirtikDefterBulundu = false;
-    private bool anonimNotBulundu = false;
-    private bool yeniGorevTetiklendi = false;
+    [Header("Ses Sistemi Entegrasyonu")]
+    public AudioSource dedektifSesKaynagi;
 
-    string DelilNotunuGetir(string delilAdi)
+    // ElevenLabs ses dosyası isimlerini ve notları eşleştiren fonksiyon[cite: 3]
+    public string DelilNotunuGetir(string delilAdi, out string sesDosyaAdi, out bool gercekMi)
     {
+        gercekMi = true;
         switch (delilAdi)
         {
             // --- GERÇEK DELİLLER ---
-            case "Kırık Vinç Kancası":
-                return "Vincin kancasındaki derin çatlaklar gizlenmeye çalışılmış. Kaza göz göre göre gelmiş.";
-            case "Yırtık Bakım Defteri":
-                return "Bakım kayıtları sahte. Biri bu defterin sayfalarını bilerek yırtmış.";
             case "Kırık Vinç Teli":
-                return "Bu çelik tel yıpranmayla kopmaz. Ağzı spiral taşıyla kesilmiş gibi duruyor.";
-            case "Anonim Not":
-                return "Murat'ın baretine sıkıştırılan not: 'Konuşursan sonun limanın dibi olur' yazıyor.";
-            case "Güvenlik Kamera Kaydı":
-                return "Gece 02:00 kayıtları. Müdür Kemal'in elinde bir aletle vinç dairesine girdiğini gösteriyor.";
+                sesDosyaAdi = "Dedektif_Delil_Tel";
+                return "Liflerde yıpranma yok. Ağzı spiral taşıyla, yani demir testeresiyle milimetrik olarak kesilmiş. Bu bir kaza değil, sabotaj.";
             case "İlaç":
-                return "Murat'ın kullandığı ağır göz ilacı. Gece vardiyasında çalışması yasal olarak imkansızdı.";
+                sesDosyaAdi = "Dedektif_Delil_Ilac";
+                return "Kuvvetli bir sakinleştirici. Murat'ın o gece neden refleks kaybı yaşadığını ve vince zorla çıkarıldığını açıklıyor.";
+            case "Şantiye Günlüğü":
+                sesDosyaAdi = "Dedektif_Delil_Gunluk";
+                return "Müdürün 'kazadan haberim yoktu' ifadesini yerle bir eden doğrudan planlama kanıtı.";
+            case "USB Bellek":
+                sesDosyaAdi = "Dedektif_Delil_USB";
+                return "Güvenlik Rıza'nın elektrik kesildi yalanını çürüten orijinal kayıtlar. Murat'ın vince çıkarken arkasından birinin tırmandığını gösteriyor.";
+            case "Şantaj Mektubu":
+                sesDosyaAdi = "Dedektif_Delil_Mektup";
+                return "Müdür Kemal Demir'i bu cinayete azmettiren holding baskısının resmi belgesi.";
 
             // --- SAHTE DELİLLER ---
             case "Kırık Kahve Kupası":
-                return "İçinde sadece kahve tortusu var. Kazayla doğrudan bir bağı yok.";
+                sesDosyaAdi = "Dedektif_Sahte_Kupa"; gercekMi = false;
+                return "Kupa yere düşüp kırılmış. İçinde sadece kahve kalıntıları var. Kazayla doğrudan bir bağı yok.";
             case "Paslı Çelik Halat":
-                return "Aylardır burada çürümeye bırakılmış eski bir parça, olayla ilgisiz.";
+                sesDosyaAdi = "Dedektif_Sahte_Halat"; gercekMi = false;
+                return "Tamamen paslanmış ve çürümüş bir halat. Bu parça aylardır burada paslanmaya bırakılmış.";
             case "Eski Telsiz Bataryası":
-                return "Sıradan bir batarya arızası, Murat'ın düşüş sebebiyle bağı yok.";
+                sesDosyaAdi = "Dedektif_Sahte_Batarya"; gercekMi = false;
+                return "Aşırı ısınmadan şişmiş bir batarya. Telsiz ağındaki arızayı açıklayabilir ama Murat'ın düşüş sebebiyle bir ilgisi yok.";
             case "Liman Giriş Kartı":
-                return "Üç gün önce kaybolmuş sıradan bir kart. Bizi şaşırtmak için bırakılmış olabilir.";
+                sesDosyaAdi = "Dedektif_Sahte_Kart"; gercekMi = false;
+                return "Başka bir liman işçisine ait kayıp kart. Kaza gecesinden üç gün önce kayıp ilanı verilmiş, sahte bir iz.";
             case "Kirli İş Eldiveni":
-                return "Standart motor yağı lekeleri taşıyor, şüpheli bir iz yok.";
+                sesDosyaAdi = "Dedektif_Sahte_Eldiven"; gercekMi = false;
+                return "Üzerinde standart motor yağı lekeleri olan bir eldiven. Herhangi bir parmak izi ya da boğuşma kanıtı taşımıyor.";
             case "Araba Anahtarı":
-                return "Sıradan bir binek araç anahtarı, cinayet planıyla alakası yok.";
+                sesDosyaAdi = "Dedektif_Sahte_Anahtar"; gercekMi = false;
+                return "Sıradan bir binek araç anahtarı. Şantiyedeki şirket araçlarından birine ait, cinayet planıyla alakası yok.";
+            
             default:
-                return "Bu delil inceleniyor...";
+                sesDosyaAdi = "";
+                return "Bu nesne inceleniyor...";
         }
     }
 
     void Awake()
     {
-        Instance = this;
-    }
-
-    public int BulunanDelilSayisiniGetir()
-    {
-        return bulunanDelilSayisi;
+        Instance = this; //[cite: 3]
     }
 
     void Start()
     {
-        if (gorevTamamPanel != null) gorevTamamPanel.SetActive(false);
-        if (bildirimPanel != null) bildirimPanel.SetActive(false);
-        DelilSayaciniGuncelle();
+        if (gorevTamamPanel != null) gorevTamamPanel.SetActive(false); //[cite: 3]
+        if (bildirimPanel != null) bildirimPanel.SetActive(false); //[cite: 3]
+        DelilSayaciniGuncelle(); //[cite: 3]
     }
 
-    public void DelilBulundu(string delilAdi)
+    public void DelilBulundu(string delilAdi) //[cite: 3]
     {
-        if (bildirimBaslik != null) bildirimBaslik.text = "DELİL BULUNDU";
-        if (bildirimIsim != null) bildirimIsim.text = delilAdi;
-        if (bildirimNot != null) bildirimNot.text = DelilNotunuGetir(delilAdi);
+        string sesIsmi;
+        bool gercekMi;
+        string aciklama = DelilNotunuGetir(delilAdi, out sesIsmi, out gercekMi); //[cite: 3]
 
-        StopCoroutine("BildirimAnimasyon");
-        StartCoroutine(BildirimAnimasyon());
+        if (bildirimBaslik != null) bildirimBaslik.text = gercekMi ? "KRİTİK DELİL BULUNDU" : "ŞÜPHELİ NESNE KAYDEDİLDİ"; //[cite: 3]
+        if (bildirimIsim != null) bildirimIsim.text = delilAdi; //[cite: 3]
+        if (bildirimNot != null) bildirimNot.text = aciklama; //[cite: 3]
 
-        bulunanDelilSayisi++;
-        DelilSayaciniGuncelle();
-
-        if (delilAdi == "Yırtık Bakım Defteri")
+        // --- ELEVENLABS SESİNİ OYNATMA MANTIĞI ---
+        if (dedektifSesKaynagi != null && !string.IsNullOrEmpty(sesIsmi))
         {
-            yirtikDefterBulundu = true;
-        }
-        else if (delilAdi == "Anonim Not")
-        {
-            anonimNotBulundu = true;
+            AudioClip icSes = Resources.Load<AudioClip>("Audio/Sounds/" + sesIsmi);
+            if (icSes != null)
+            {
+                dedektifSesKaynagi.clip = icSes;
+                dedektifSesKaynagi.Play();
+            }
         }
 
-        if (yirtikDefterBulundu && anonimNotBulundu && !yeniGorevTetiklendi)
-        {
-            yeniGorevTetiklendi = true;
-            MudurOdasindakiGoreviTamamla();
-        }
+        StopCoroutine("BildirimAnimasyon"); //[cite: 3]
+        StartCoroutine(BildirimAnimasyon()); //[cite: 3]
+
+        bulunanDelilSayisi++; //[cite: 3]
+        DelilSayaciniGuncelle(); //[cite: 3]
     }
 
-    void MudurOdasindakiGoreviTamamla()
+    IEnumerator BildirimAnimasyon() //[cite: 3]
     {
-        if (GorevYoneticisi.Instance != null)
+        if (bildirimPanel == null) yield break; //[cite: 3]
+
+        bildirimPanel.SetActive(true); //[cite: 3]
+        RectTransform rect = bildirimPanel.GetComponent<RectTransform>(); //[cite: 3]
+
+        Vector2 baslangic = new Vector2(500f, rect.anchoredPosition.y); //[cite: 3]
+        Vector2 hedef = new Vector2(-230f, rect.anchoredPosition.y); //[cite: 3]
+
+        float sure = 0.4f; //[cite: 3]
+        float gecenSure = 0f; //[cite: 3]
+
+        while (gecenSure < sure) //[cite: 3]
         {
-            GorevYoneticisi.Instance.OdaVePanoTamamla(); 
+            gecenSure += Time.deltaTime; //[cite: 3]
+            float t = Mathf.SmoothStep(0f, 1f, gecenSure / sure); //[cite: 3]
+            rect.anchoredPosition = Vector2.Lerp(baslangic, hedef, t); //[cite: 3]
+            yield return null; //[cite: 3]
         }
+
+        yield return new WaitForSeconds(6f); //[cite: 3]
+
+        gecenSure = 0f; //[cite: 3]
+        while (gecenSure < sure) //[cite: 3]
+        {
+            gecenSure += Time.deltaTime; //[cite: 3]
+            float t = Mathf.SmoothStep(0f, 1f, gecenSure / sure); //[cite: 3]
+            rect.anchoredPosition = Vector2.Lerp(hedef, baslangic, t); //[cite: 3]
+            yield return null; //[cite: 3]
+        }
+
+        bildirimPanel.SetActive(false); //[cite: 3]
     }
 
-    IEnumerator BildirimAnimasyon()
-    {
-        if (bildirimPanel == null) yield break;
-
-        bildirimPanel.SetActive(true);
-        RectTransform rect = bildirimPanel.GetComponent<RectTransform>();
-
-        Vector2 baslangic = new Vector2(500f, rect.anchoredPosition.y);
-        Vector2 hedef = new Vector2(-230f, rect.anchoredPosition.y);
-
-        float sure = 0.4f;
-        float gecenSure = 0f;
-
-        while (gecenSure < sure)
-        {
-            gecenSure += Time.deltaTime;
-            float t = Mathf.SmoothStep(0f, 1f, gecenSure / sure);
-            rect.anchoredPosition = Vector2.Lerp(baslangic, hedef, t);
-            yield return null;
-        }
-
-        yield return new WaitForSeconds(6f);
-
-        gecenSure = 0f;
-        while (gecenSure < sure)
-        {
-            gecenSure += Time.deltaTime;
-            float t = Mathf.SmoothStep(0f, 1f, gecenSure / sure);
-            rect.anchoredPosition = Vector2.Lerp(hedef, baslangic, t);
-            yield return null;
-        }
-
-        bildirimPanel.SetActive(false);
-    }
-
-    void DelilSayaciniGuncelle()
+    void DelilSayaciniGuncelle() //[cite: 3]
     {
         if (delilSayaciText != null)
-            delilSayaciText.text = bulunanDelilSayisi + "/" + toplamDelilSayisi + " Delil Bulundu";
+            delilSayaciText.text = bulunanDelilSayisi + "/" + toplamDelilSayisi + " Nesne Klasörde"; //[cite: 3]
     }
 
-    public void GorevTamamlandiPaneliAc()
+    public void GorevTamamlandiPaneliAc() //[cite: 3]
     {
-        if (gorevTamamPanel != null) gorevTamamPanel.SetActive(true);
-        Invoke("PaneliKapat", 2f);
+        if (gorevTamamPanel != null) gorevTamamPanel.SetActive(true); //[cite: 3]
+        Invoke("PaneliKapat", 2f); //[cite: 3]
     }
 
-    void PaneliKapat()
+    void PaneliKapat() //[cite: 3]
     {
-        if (gorevTamamPanel != null) gorevTamamPanel.SetActive(false);
+        if (gorevTamamPanel != null) gorevTamamPanel.SetActive(false); //[cite: 3]
         if (SecimYoneticisi.Instance != null)
-            SecimYoneticisi.Instance.SecimEkraniniAc();
+            SecimYoneticisi.Instance.SecimEkraniniAc(); //[cite: 3]
     }
 }

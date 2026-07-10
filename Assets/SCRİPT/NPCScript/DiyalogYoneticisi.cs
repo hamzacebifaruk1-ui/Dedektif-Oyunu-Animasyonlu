@@ -1,173 +1,212 @@
-using UnityEngine;
-using UnityEngine.InputSystem;
-using TMPro;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+
+[System.Serializable]
+public class DiyalogSatiri
+{
+    public string konusmaciAdi;
+    [TextArea(3, 5)] public string textIcerik;
+    public string elevenLabsSesDosyaAdi;
+}
 
 public class DiyalogYoneticisi : MonoBehaviour
 {
     public static DiyalogYoneticisi Instance;
 
     [Header("UI Elemanları")]
-    public GameObject diyalogPanel;
-    public TextMeshProUGUI npcAdiText;
-    public TextMeshProUGUI konusmaText;
-    public GameObject konusIpucu;
+    public GameObject diyalogPaneli;
+    public TextMeshProUGUI konusmaciText;
+    public TextMeshProUGUI diyalogText;
+    public TextMeshProUGUI gorevYazisiText; 
+    public TextMeshProUGUI delilYazisiText; // Sahnedeki Delil Yazısı bileseni
 
-    [Header("Ayarlar")]
-    public float etkilesimMesafesi = 2.5f;
+    [Header("Ses Kaynağı")]
+    public AudioSource audioSource;
 
-    private NpcDiyalog yakinNpc = null;
-    private bool diyalogAcik = false;
-    private bool uyariGosteriliyor = false;
+    [Header("Yazı Ayarları")]
+    public float yaziHizi = 0.03f;
 
-    void Awake() { Instance = this; }
+    // >>> Müfettiş (Inspector) panelinden elinle sürükleyip bırakacağın ilk rota hedefi <<<
+    [Header("Rota Ayarları")]
+    public Transform ilkRotaHedefi;
+
+    private HashSet<string> konusulanNpcListesi = new HashSet<string>();
+
+    private List<DiyalogSatiri> mevcutDiyalogListesi;
+    private int gecerliSatirIndex = 0;
+    public bool diyalogAktif = false;
+    private Coroutine daktiloCoroutine;
+    private bool yaziAkiyorMu = false;
+    private string tamMetin = "";
+    private string suAnkiNpcAdi = "";
+
+    void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
 
     void Start()
     {
-        if (diyalogPanel != null) diyalogPanel.SetActive(false);
-        if (konusIpucu != null) konusIpucu.SetActive(false);
+        GameObject gorevObjesi = GameObject.Find("GorevYazisi"); 
+        if (gorevObjesi != null) gorevYazisiText = gorevObjesi.GetComponent<TextMeshProUGUI>();
+
+        // Sahne ilk açıldığında DelilYazisi objesini otomatik buluyoruz
+        GameObject delilObjesi = GameObject.Find("DelilYazisi");
+        if (delilObjesi != null)
+        {
+            delilYazisiText = delilObjesi.GetComponent<TextMeshProUGUI>();
+            // İlk konuşmalar bitene kadar delil sayacını gizli tutalım
+            delilObjesi.SetActive(false); 
+        }
     }
 
     void Update()
     {
-        YakinNpcKontrol();
+        var klavye = UnityEngine.InputSystem.Keyboard.current;
+        var fare = UnityEngine.InputSystem.Mouse.current;
 
-        Keyboard klavye = Keyboard.current;
-        if (klavye == null) return;
+        bool spaceBasildi = klavye != null && klavye.spaceKey.wasPressedThisFrame;
+        bool solTiklandi = fare != null && fare.leftButton.wasPressedThisFrame;
 
-        if (klavye.tKey.wasPressedThisFrame && yakinNpc != null && !diyalogAcik && !uyariGosteriliyor)
+        if (diyalogAktif && (spaceBasildi || solTiklandi))
         {
-            string npcAdi = yakinNpc.GetAd();
-
-            if (GorevYoneticisi.Instance != null)
+            if (yaziAkiyorMu)
             {
-                if (npcAdi.Contains("Kemal") && GorevYoneticisi.Instance.kameraKaydiBulundu)
-                {
-                    if (GorevYoneticisi.Instance.kemalleKonusuldu && !GorevYoneticisi.Instance.ilacKutusuAlindi)
-                    {
-                        StartCoroutine(MudurUyarisiGoster("Evlat, vincin oradaki delillere bak demiştin, git önce onları araştır!"));
-                        return;
-                    }
-                    else if (GorevYoneticisi.Instance.ahmetleKonusuldu && !GorevYoneticisi.Instance.odaVePanoIncelendi)
-                    {
-                        StartCoroutine(MudurUyarisiGoster("Odamda ne işin var? Çık dışarı!"));
-                        return;
-                    }
-                }
+                DurdurVeMetniTamamla();
             }
-
-            diyalogAcik = true;
-            if (konusIpucu != null) konusIpucu.SetActive(false);
-            if (diyalogPanel != null) diyalogPanel.SetActive(true);
-            if (npcAdiText != null) npcAdiText.text = npcAdi;
-            if (konusmaText != null) konusmaText.text = "";
-
-            // Diyalog esnasında oyuncunun yürümesini engellemek için kilit koyuyoruz
-            hareket oyuncuScripti = FindFirstObjectByType<hareket>();
-            if (oyuncuScripti != null) oyuncuScripti.hareketEdebilirMi = false;
-
-            // HATANIN DÜZELTİLDİĞİ YER: Orijinal 'Konustur' fonksiyonunu kendi yapısıyla çağırıyoruz
-            StartCoroutine(yakinNpc.Konustur(
-                metin => { if (konusmaText != null) konusmaText.text = metin; },
-                () => DiyaloguBitir()
-            ));
+            else
+            {
+                SonrakiSatiraGec();
+            }
         }
     }
 
-    void YakinNpcKontrol()
+    public void DiyalogBaslat(List<DiyalogSatiri> yeniDiyalog, string npcAdi)
     {
-        if (diyalogAcik || uyariGosteriliyor) return;
+        mevcutDiyalogListesi = yeniDiyalog;
+        gecerliSatirIndex = 0;
+        diyalogAktif = true;
+        suAnkiNpcAdi = npcAdi;
+        diyalogPaneli.SetActive(true);
 
-        Collider[] yakinlar = Physics.OverlapSphere(transform.position, etkilesimMesafesi);
-        NpcDiyalog enYakinNpc = null;
-        float enYakinMesafe = etkilesimMesafesi;
+        hareket oyuncuHareketi = FindFirstObjectByType<hareket>();
+        if (oyuncuHareketi != null) oyuncuHareketi.enabled = false;
 
-        foreach (Collider col in yakinlar)
+        SatiriOynat();
+    }
+
+    void SatiriOynat()
+    {
+        if (gecerliSatirIndex >= mevcutDiyalogListesi.Count)
         {
-            if (col.transform == transform || col.transform.IsChildOf(transform)) continue;
-
-            NpcDiyalog npc = col.GetComponent<NpcDiyalog>();
-            if (npc == null) npc = col.GetComponentInParent<NpcDiyalog>();
-
-            if (npc != null)
-            {
-                float mesafe = Vector3.Distance(transform.position, npc.transform.position);
-                if (mesafe < enYakinMesafe)
-                {
-                    enYakinMesafe = mesafe;
-                    enYakinNpc = npc;
-                }
-            }
+            DiyaloguBitir();
+            return;
         }
 
-        yakinNpc = enYakinNpc;
+        DiyalogSatiri satir = mevcutDiyalogListesi[gecerliSatirIndex];
+        konusmaciText.text = satir.konusmaciAdi;
+        tamMetin = satir.textIcerik;
 
-        if (yakinNpc != null && konusIpucu != null)
-            konusIpucu.SetActive(true);
-        else if (konusIpucu != null)
-            konusIpucu.SetActive(false);
+        if (satir.konusmaciAdi.Contains("İç Ses"))
+        {
+            diyalogText.color = Color.cyan;
+            diyalogText.fontStyle = FontStyles.Italic;
+        }
+        else
+        {
+            diyalogText.color = Color.white;
+            diyalogText.fontStyle = FontStyles.Normal;
+        }
+
+        audioSource.Stop();
+        AudioClip klip = Resources.Load<AudioClip>("Audio/Dialogs/" + satir.elevenLabsSesDosyaAdi);
+        if (klip != null)
+        {
+            audioSource.clip = klip;
+            audioSource.Play();
+        }
+
+        if (daktiloCoroutine != null) StopCoroutine(daktiloCoroutine);
+        daktiloCoroutine = StartCoroutine(YaziyiDokCoroutine(tamMetin));
+    }
+
+    IEnumerator YaziyiDokCoroutine(string metin)
+    {
+        diyalogText.text = "";
+        yaziAkiyorMu = true;
+
+        foreach (char harf in metin.ToCharArray())
+        {
+            diyalogText.text += harf;
+            yield return new WaitForSeconds(yaziHizi);
+        }
+
+        yaziAkiyorMu = false;
+    }
+
+    void DurdurVeMetniTamamla()
+    {
+        if (daktiloCoroutine != null) StopCoroutine(daktiloCoroutine);
+        diyalogText.text = tamMetin;
+        yaziAkiyorMu = false;
+    }
+
+    void SonrakiSatiraGec()
+    {
+        gecerliSatirIndex++;
+        SatiriOynat();
     }
 
     void DiyaloguBitir()
     {
-        diyalogAcik = false;
-        if (diyalogPanel != null) diyalogPanel.SetActive(false);
+        diyalogAktif = false;
+        diyalogPaneli.SetActive(false);
+        audioSource.Stop();
 
-        // Diyalog bitince oyuncunun hareket kilidini kaldırıyoruz
-        hareket oyuncuScripti = FindFirstObjectByType<hareket>();
-        if (oyuncuScripti != null) oyuncuScripti.hareketEdebilirMi = true;
-
-        if (yakinNpc != null && GorevYoneticisi.Instance != null)
+        if (!string.IsNullOrEmpty(suAnkiNpcAdi))
         {
-            string npcAdi = yakinNpc.GetAd();
-
-            // === FİNAL TETİKLEME KONTROLÜ ===
-            if (npcAdi.Contains("Kemal") && GorevYoneticisi.Instance.kameraKaydiBulundu)
-            {
-                GorevYoneticisi.Instance.FinalHesaplasmaTamamla();
-            }
-            // === NORMAL GÖREV AKIŞ KONTROLLERİ ===
-            else if (npcAdi.Contains("Kemal"))
-            {
-                if (GorevYoneticisi.Instance.odaVePanoIncelendi && !GorevYoneticisi.Instance.kemalPanikledi)
-                    GorevYoneticisi.Instance.KemalPanikGoreviniTamamla();
-                else if (!GorevYoneticisi.Instance.kemalleKonusuldu)
-                    GorevYoneticisi.Instance.KemalGoreviniTamamla();
-            }
-            else if (npcAdi.Contains("Ahmet"))
-            {
-                if (GorevYoneticisi.Instance.ilacKutusuAlindi && !GorevYoneticisi.Instance.ahmetleKonusuldu)
-                    GorevYoneticisi.Instance.AhmetGoreviniTamamla();
-            }
-            else if (npcAdi.Contains("Rıza") || npcAdi.Contains("Riza"))
-            {
-                if (GorevYoneticisi.Instance.teknikDelillerAlindi && !GorevYoneticisi.Instance.rizaItirafEtti)
-                    GorevYoneticisi.Instance.RizaGoreviniTamamla();
-            }
+            konusulanNpcListesi.Add(suAnkiNpcAdi);
+            GorevKontrolEt();
         }
 
-        if (yakinNpc != null && konusIpucu != null)
-            konusIpucu.SetActive(true);
+        hareket oyuncuHareketi = FindFirstObjectByType<hareket>();
+        if (oyuncuHareketi != null) oyuncuHareketi.enabled = true;
     }
+// Rota Ayarları başlığının altına şu bool değişkeni ekle:
+    [Header("Görev Durumu")]
+    public bool gorevHazir = false; // 3 kişiyle konuşuldu mu?
 
-    IEnumerator MudurUyarisiGoster(string mesaj)
+    void GorevKontrolEt()
     {
-        uyariGosteriliyor = true;
-        if (konusIpucu != null) konusIpucu.SetActive(false);
-        if (diyalogPanel != null) diyalogPanel.SetActive(true);
-        
-        if (npcAdiText != null) npcAdiText.text = "Müdür Kemal";
-        if (konusmaText != null) konusmaText.text = mesaj;
+        if (konusulanNpcListesi.Contains("Güvenlik Rıza") && 
+            konusulanNpcListesi.Contains("Liman Müdürü Kemal") && 
+            konusulanNpcListesi.Contains("İşçi Ahmet"))
+        {
+            // Görevin tamamlandığını ve rotanın çizilmesi gerektiğini onaylıyoruz
+            gorevHazir = true;
 
-        hareket oyuncuScripti = FindFirstObjectByType<hareket>();
-        if (oyuncuScripti != null) oyuncuScripti.hareketEdebilirMi = false;
+            if (gorevYazisiText != null)
+            {
+                gorevYazisiText.text = "GÖREV GÜNCELLENDİ:\nŞantiyedeki gizli delilleri araştır.";
+            }
 
-        yield return new WaitForSeconds(3f);
+            if (delilYazisiText != null)
+            {
+                delilYazisiText.gameObject.SetActive(true);
+                delilYazisiText.text = "Toplanan Delil: 0 / 5";
+            }
 
-        if (diyalogPanel != null) diyalogPanel.SetActive(false);
-        if (oyuncuScripti != null) oyuncuScripti.hareketEdebilirMi = true;
-        uyariGosteriliyor = false;
+            // Harita İkonlarını Gösteriyoruz
+            BuyukHaritaYonetici buyukHarita = FindFirstObjectByType<BuyukHaritaYonetici>();
+            if (buyukHarita != null) buyukHarita.NpcIkonlariniGoster(true);
 
-        YakinNpcKontrol();
+            MinimapYonetici minimap = FindFirstObjectByType<MinimapYonetici>();
+            if (minimap != null) minimap.NpcIkonlariniGoster(true);
+            
+            Debug.Log("3 Şüpheliyle konuşuldu, görev tetiklendi!");
+        }
     }
-}
+    }

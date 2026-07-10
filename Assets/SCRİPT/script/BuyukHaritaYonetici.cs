@@ -1,9 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections.Generic; // Listeleme için gerekli kütüphane eklendi
+using System.Collections.Generic;
 
-// Büyük (M tuşuyla açılan) haritayı yöneten script.
-// Oyuncu ikonu takibi + NPC takibi + sağ-click sürükleme (pan) + scroll zoom içerir.
 public class BuyukHaritaYonetici : MonoBehaviour
 {
     [System.Serializable]
@@ -38,7 +36,7 @@ public class BuyukHaritaYonetici : MonoBehaviour
     public float zoomHassasiyeti = 0.1f;
 
     [Header("Pan (Sürükleme) Ayarları")]
-    public RectTransform haritaViewport; // Buyuk_Harita_Paneli'nen RectTransform'u
+    public RectTransform haritaViewport;
 
     private bool haritaAcik = false;
     private bool suruklemeAktif = false;
@@ -93,7 +91,6 @@ public class BuyukHaritaYonetici : MonoBehaviour
         float karakterYRotasyonu = dedektifTransform.eulerAngles.y;
         oyuncuIkonuRect.localRotation = Quaternion.Euler(0, 0, -karakterYRotasyonu);
 
-        // === NPC İkonlarını Güncelle ===
         foreach (var npc in npcIkonlari)
         {
             if (npc.npcTransform == null || npc.ikonRect == null) continue;
@@ -118,7 +115,6 @@ public class BuyukHaritaYonetici : MonoBehaviour
         Mouse mouse = Mouse.current;
         if (mouse == null || genisHaritaResmiRect == null) return;
 
-        // === SAĞ CLICK İLE SÜRÜKLEME ===
         if (mouse.rightButton.wasPressedThisFrame)
         {
             suruklemeAktif = true;
@@ -138,7 +134,6 @@ public class BuyukHaritaYonetici : MonoBehaviour
             SinirlariKisitla();
         }
 
-        // === SCROLL İLE ZOOM ===
         float scroll = mouse.scroll.ReadValue().y;
         if (Mathf.Abs(scroll) > 0.01f)
         {
@@ -164,5 +159,17 @@ public class BuyukHaritaYonetici : MonoBehaviour
         pos.x = Mathf.Clamp(pos.x, -maxX, maxX);
         pos.y = Mathf.Clamp(pos.y, -maxY, maxY);
         genisHaritaResmiRect.anchoredPosition = pos;
+    }
+
+    // DiyalogYoneticisi'nin hata vermeden çağırabilmesi için eklenen fonksiyon
+    public void NpcIkonlariniGoster(bool durum)
+    {
+        foreach (var npc in npcIkonlari)
+        {
+            if (npc.ikonRect != null)
+            {
+                npc.ikonRect.gameObject.SetActive(durum);
+            }
+        }
     }
 }

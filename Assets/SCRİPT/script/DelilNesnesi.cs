@@ -25,29 +25,26 @@ public class DelilNesnesi : MonoBehaviour
 
     public bool ToplanabilirMi()
     {
-        // İsmi tamamen küçük harfe çevirip arama yapıyoruz (Karakter hatasını önler)
-        string aramaAdi = delilAdi.ToLower();
+        if (toplandiMi) return false;
 
-        if (aramaAdi.Contains("sahte")) return !toplandiMi;
-        if (GorevYoneticisi.Instance == null) return !toplandiMi;
-
-        if (aramaAdi.Contains("ilac") || aramaAdi.Contains("ilaç"))
+        // >>> %100 GARANTİLİ KONTROL KATMANI <<<
+        // "3 Şüpheliyle konuşuldu, görev tetiklendi!" anında çalışan sistem diyalog yöneticisindedir.
+        if (DiyalogYoneticisi.Instance != null && DiyalogYoneticisi.Instance.delilYazisiText != null)
         {
-            if (!GorevYoneticisi.Instance.kemalleKonusuldu) return false;
+            // Eğer senin ekrandaki "Toplanan Delil: 0 / 5" yazısını tutan sayaç UI nesnesi 
+            // hiyerarşide AKTİF DEĞİLSE (yani konuşmalar bitip görev tetiklenmediyse) KESİNLİKLE FALSE DÖN!
+            if (!DiyalogYoneticisi.Instance.delilYazisiText.gameObject.activeInHierarchy)
+            {
+                return false; // Konuşmalar bitene kadar yazı çıkmaz, nesne toplanmaz!
+            }
         }
-        if (aramaAdi.Contains("defter") || aramaAdi.Contains("not"))
+        else
         {
-            if (!GorevYoneticisi.Instance.ahmetleKonusuldu) return false;
-        }
-        if (aramaAdi.Contains("tel"))
-        {
-            if (!GorevYoneticisi.Instance.kemalPanikledi) return false;
-        }
-        if (aramaAdi.Contains("kamera") || aramaAdi.Contains("kaydı") || aramaAdi.Contains("usb"))
-        {
-            if (!GorevYoneticisi.Instance.rizaItirafEtti) return false;
+            // Eğer sahnede diyalog yöneticisi henüz uyanmadıysa koruma amaçlı engelle
+            return false;
         }
 
+        // --- Konuşmalar bittiyse (Yazı aktif olduysa) artık tüm delillere doğrudan izin ver ---
         return !toplandiMi;
     }
 
@@ -72,27 +69,6 @@ public class DelilNesnesi : MonoBehaviour
         if (DelilIncelemeSistemi.Instance != null)
         {
             DelilIncelemeSistemi.Instance.IncelemeyiBaslat(delilPrefab, delilAdi, incelemeBoyutu, incelemeMesafesi);
-        }
-
-        if (DelilYoneticisi.Instance != null)
-            DelilYoneticisi.Instance.DelilBulundu(delilAdi);
-
-        if (NotDefteriYoneticisi.Instance != null)
-            NotDefteriYoneticisi.Instance.DelilEkle(delilAdi);
-
-        // Görev kontrol isimlerini de güvenli hale getirdik
-        string aramaAdi = delilAdi.ToLower();
-        if (GorevYoneticisi.Instance != null)
-        {
-            if (aramaAdi.Contains("ilac") || aramaAdi.Contains("ilaç"))
-                GorevYoneticisi.Instance.IlacKutusuBulundu();
-            else if (aramaAdi.Contains("tel"))
-            {
-                GorevYoneticisi.Instance.kirikTelAlindi = true;
-                GorevYoneticisi.Instance.TeknikDelillerTamamla();
-            }
-            else if (aramaAdi.Contains("kamera") || aramaAdi.Contains("kaydı") || aramaAdi.Contains("usb"))
-                GorevYoneticisi.Instance.KameraKaydiBulunduTamamla();
         }
 
         if (GetComponent<MeshRenderer>() != null) GetComponent<MeshRenderer>().enabled = false;
