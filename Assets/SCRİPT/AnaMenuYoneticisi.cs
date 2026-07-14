@@ -9,12 +9,12 @@ public class AnaMenuYoneticisi : MonoBehaviour
     public Image karartmaEkrani;
 
     [Header("Ses Ayarları")]
-    public AudioSource menuMusic; // Inspector'dan Audio Source'u buraya bağla
+    public AudioSource menuMusic; // Inspector'dan arka plan müzik AudioSource'unu bağla
     public float sesGecisSuresi = 1.0f;
 
     void Start()
     {
-        // Fareyi serbest bırak ve görünür yap
+        // Fare imlecini serbest bırak ve görünür kıl
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
@@ -25,31 +25,29 @@ public class AnaMenuYoneticisi : MonoBehaviour
             StartCoroutine(FadeYap(1f, 0f, 1.5f));
         }
 
-        // Müzik varsa ve çalmıyorsa başlat
+        // Müzik varsa ve çalmıycorsa başlat
         if (menuMusic != null && !menuMusic.isPlaying)
         {
             menuMusic.Play();
         }
     }
 
-    // --- BUTON METODLARI ---
-
     public void OyunuBaslat()
     {
-        // Build Settings Index 2: GirisSahnesi (Senin sıralamana göre)
-        StartCoroutine(SahneGecAsync(2)); 
+        // Giriş Sinematiği Sahnesine yumuşak geçiş yap (Build Settings index: 1 veya sonraki sahne)
+        StartCoroutine(SahneGecAsync(SceneManager.GetActiveScene().buildIndex + 1)); 
     }
 
     public void AyarlarGit()
     {
-        // Build Settings Index 4: AyarlarSahnesi
+        // Ayarlar Sahnesine git (Build Settings index: 4 veya kendi belirlediğin)
         StartCoroutine(SahneGecAsync(4)); 
     }
 
     public void MenuyeDon()
     {
-        // Build Settings Index 1: AnaMenu
-        StartCoroutine(SahneGecAsync(1));
+        // Ana Menü Sahnesine dön (Build Settings index: 0)
+        StartCoroutine(SahneGecAsync(0));
     }
 
     public void OyundanCik()
@@ -61,8 +59,6 @@ public class AnaMenuYoneticisi : MonoBehaviour
         #endif
     }
 
-    // --- GEÇİŞ SİSTEMİ (Müzik Fade Destekli) ---
-
     IEnumerator SahneGecAsync(int sahneIndex)
     {
         // 1. Ekran kararırken müziği de yavaşça kıs
@@ -71,18 +67,12 @@ public class AnaMenuYoneticisi : MonoBehaviour
             StartCoroutine(MuzikKismayaBasla(sesGecisSuresi));
         }
 
-        yield return StartCoroutine(FadeYap(0f, 1f, 1f));
+        yield return StartCoroutine(FadeYap(0f, 1f, 1.2f));
         
-        // 2. Arka planda sahneyi yükle
-        AsyncOperation operasyon = SceneManager.LoadSceneAsync(sahneIndex);
-        
-        while (!operasyon.isDone)
-        {
-            yield return null;
-        }
+        // 2. Sahneyi yükle
+        SceneManager.LoadScene(sahneIndex);
     }
 
-    // Müziği yavaşça kısmak için yardımcı Coroutine
     IEnumerator MuzikKismayaBasla(float sure)
     {
         float baslangicSes = menuMusic.volume;

@@ -19,7 +19,6 @@ public class NpcDiyalog : MonoBehaviour
         hareket oyuncuScript = FindFirstObjectByType<hareket>();
         if (oyuncuScript != null) oyuncuTransform = oyuncuScript.transform;
         
-        // Sahnede gizlediğimiz "EtkilesimYazisi" isimli UI elemanını otomatik buluyoruz
         GameObject canvas = GameObject.Find("Canvas");
         if (canvas != null)
         {
@@ -36,28 +35,48 @@ public class NpcDiyalog : MonoBehaviour
 
         float mesafe = Vector3.Distance(transform.position, oyuncuTransform.position);
         
-        // Yeni Giriş Sistemi için klavye kontrolü
         var klavye = UnityEngine.InputSystem.Keyboard.current;
         bool eBasildi = klavye != null && klavye.eKey.wasPressedThisFrame;
 
-        // OYUNCU NPC'YE YAKINSA YAZIYI AÇ
         if (mesafe <= etkilesimMesafesi)
         {
-            // Eğer diyalog paneli şu an açık DEĞİLSE yazıyı göster
             if (etkilesimUI != null && !etkilesimUI.activeSelf && !DiyalogYoneticisi.Instance.diyalogPaneli.activeSelf)
             {
                 etkilesimUI.SetActive(true);
                 yaziGosteriliyorMu = true;
             }
 
-            // E tuşuna basılırsa konuşmayı başlat ve ipucu yazısını gizle
             if (eBasildi && !DiyalogYoneticisi.Instance.diyalogPaneli.activeSelf)
             {
                 if (etkilesimUI != null) etkilesimUI.SetActive(false);
 
-                bool gercekDelillerToplandi = false; 
+                // --- SENARYO GEREĞİ DİNAMİK YÜZLEŞME KONTROLLERİ ---
+                bool yuzlesmeAktifMi = false;
 
-                if (gercekDelillerToplandi)
+                if (npcAdi == "Güvenlik Rıza")
+                {
+                    // Oyuncu USB'yi bulduysa Rıza ile yüzleşebilir
+                    yuzlesmeAktifMi = PlayerPrefs.GetInt("UsbBulundu", 0) == 1;
+                }
+                else if (npcAdi == "Liman Müdürü Kemal")
+                {
+                    // Oyuncu Ofis Evraklarını bulduysa Kemal ile yüzleşebilir
+                    yuzlesmeAktifMi = PlayerPrefs.GetInt("EvrakBulundu", 0) == 1;
+                }
+                else if (npcAdi == "İşçi Ahmet")
+                {
+                    // Ahmet ile yüzleşme Sahne 5'teki seçim panelini tetikler
+                    if (PlayerPrefs.GetInt("UsbBulundu", 0) == 1 && PlayerPrefs.GetInt("EvrakBulundu", 0) == 1)
+                    {
+                        // Sahne 5'teki Büyük Seçim Panelini açıyoruz!
+                        SecimYoneticisi.Instance.secimPanel.SetActive(true); 
+                        Cursor.lockState = CursorLockMode.None;
+                        Cursor.visible = true;
+                        return;
+                    }
+                }
+
+                if (yuzlesmeAktifMi)
                 {
                     DiyalogYoneticisi.Instance.DiyalogBaslat(yuzlesmeSuclamaDiyalogu, npcAdi);
                 }
@@ -69,7 +88,6 @@ public class NpcDiyalog : MonoBehaviour
         }
         else
         {
-            // OYUNCU UZAKLAŞTIYSA VE YAZIYI BU NPC AÇTIYSA KAPAT
             if (yaziGosteriliyorMu && etkilesimUI != null)
             {
                 etkilesimUI.SetActive(false);
@@ -80,35 +98,39 @@ public class NpcDiyalog : MonoBehaviour
 
     private void DiyaloglariDoldur()
     {
+        ilkYalanlarDiyalogu.Clear();
+        yuzlesmeSuclamaDiyalogu.Clear();
+
         if (npcAdi == "Güvenlik Rıza")
         {
+            // SAHNE 2: İlk Sorgulama
             ilkYalanlarDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif", textIcerik = "Rıza, kaza gecesi nöbet kulübesinde sorumlu personel sendin...", elevenLabsSesDosyaAdi = "Dedektif_Soru_Riza1" });
-            ilkYalanlarDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Güvenlik Rıza", textIcerik = "Amirim valla billa, ekmeğimin üzerine yemin ederim ki...", elevenLabsSesDosyaAdi = "Riza_Yalan_Trafo" });
-            ilkYalanlarDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif İç Ses", textIcerik = "Elektrik arızası ve trafo patlaması mı? Şantiye dijital loglarında...", elevenLabsSesDosyaAdi = "Dedektif_IcSes_Riza_Suphe" });
+            ilkYalanlarDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Güvenlik Rıza", textIcerik = "Amirim valla billa, ekmeğimin üzerine yemin ederim ki... Trafo patladı şalterler attı.", elevenLabsSesDosyaAdi = "Riza_Yalan_Trafo" });
+            ilkYalanlarDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif İç Ses", textIcerik = "Elektrik arızası mı? Kulübedeki elektrik kayıtlarına baksam iyi olacak...", elevenLabsSesDosyaAdi = "Dedektif_Kulube_Ipucu" });
 
-            yuzlesmeSuclamaDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif", textIcerik = "Elimde ne var bak bakalım Rıza! Orijinal USB bellek! Elektrik gitmemiş...", elevenLabsSesDosyaAdi = "Dedektif_Yuzlesme_Riza" });
-            yuzlesmeSuclamaDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Güvenlik Rıza", textIcerik = "Amirim... Ne olur merhamet edin! Müdür Kemal Bey kaza akşamı yanıma geldi...", elevenLabsSesDosyaAdi = "Riza_Suclama_Kemal" });
-            yuzlesmeSuclamaDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif İç Ses", textIcerik = "Rıza paçasını kurtarmak için suçu direkt Müdür Kemal'in üzerine yıkıyor...", elevenLabsSesDosyaAdi = "Dedektif_IcSes_Riza_Analiz" });
+            // SAHNE 3 SONRASI: Yüzleşme
+            yuzlesmeSuclamaDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif", textIcerik = "Elimde orijinal USB bellek var Rıza! Loglara göre elektrik falan kesilmemiş!", elevenLabsSesDosyaAdi = "Dedektif_Usb_Bulundu_IcSes" });
+            yuzlesmeSuclamaDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Güvenlik Rıza", textIcerik = "Amirim... Ne olur merhamet edin! Müdür Kemal Bey kaza akşamı yanıma geldi...", elevenLabsSesDosyaAdi = "Riza_Oyuncuyu_Asagilama" });
+            yuzlesmeSuclamaDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif İç Ses", textIcerik = "Rıza paçasını kurtarmak için suçu direkt Müdür Kemal'in üzerine yıkıyor...", elevenLabsSesDosyaAdi = "Dedektif_Kulube_Ipucu" });
         }
         else if (npcAdi == "Liman Müdürü Kemal")
         {
+            // SAHNE 2: İlk Sorgulama
             ilkYalanlarDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif", textIcerik = "Kemal Bey, vincin çelik halatlarını bizzat inceledim. Sabotaj var...", elevenLabsSesDosyaAdi = "Dedektif_Soru_Kemal1" });
             ilkYalanlarDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Liman Müdürü Kemal", textIcerik = "Ne sabotesi, ne cinayeti dedektif bey? Milyarlık liman projesi burası...", elevenLabsSesDosyaAdi = "Kemal_Yalan_Sirket" });
-            ilkYalanlarDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif İç Ses", textIcerik = "Bir insan hayatının yitip gitmesinden ziyade holdingin hisselerini düşünüyor...", elevenLabsSesDosyaAdi = "Dedektif_IcSes_Kemal_Suphe" });
+            ilkYalanlarDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif İç Ses", textIcerik = "Bir insan hayatının yitip gitmesinden ziyade holdingin hisselerini düşünüyor...", elevenLabsSesDosyaAdi = "Dedektif_Ofis_Ipucu" });
 
-            yuzlesmeSuclamaDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif", textIcerik = "Holdingin gücünün arkasına saklanmayı bırak! Şantaj mektubu elimde...", elevenLabsSesDosyaAdi = "Dedektif_Yuzlesme_Kemal" });
-            yuzlesmeSuclamaDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Liman Müdürü Kemal", textIcerik = "Tamam, evet! Malzemeden kıstım ama katil değilim! İşçi Ahmet'e bakın!", elevenLabsSesDosyaAdi = "Kemal_Suclama_Ahmet" });
-            yuzlesmeSuclamaDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif İç Ses", textIcerik = "Kemal mali yolsuzluklarını kabul etti ama cinayeti Ahmet'in üzerine atıyor...", elevenLabsSesDosyaAdi = "Dedektif_IcSes_Kemal_Analiz" });
+            // SAHNE 4 SONRASI: Yüzleşme
+            yuzlesmeSuclamaDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif", textIcerik = "Holdingin gücünün arkasına saklanmayı bırak! Yolsuzluk evrakları elimde!", elevenLabsSesDosyaAdi = "Dedektif_Evrak_Bulundu_IcSes" });
+            yuzlesmeSuclamaDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Liman Müdürü Kemal", textIcerik = "Tamam, evet! Malzemeden kıstım ama katil değilim! İşçi Ahmet'e bakın!", elevenLabsSesDosyaAdi = "Kemal_Itiraf_Final" });
+            yuzlesmeSuclamaDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif İç Ses", textIcerik = "Kemal mali yolsuzluklarını kabul etti ama cinayeti Ahmet'in üzerine atıyor...", elevenLabsSesDosyaAdi = "Dedektif_Ofis_Ipucu" });
         }
         else if (npcAdi == "İşçi Ahmet")
         {
+            // SAHNE 2: İlk Sorgulama
             ilkYalanlarDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif", textIcerik = "Ahmet, Murat vince tırmanmadan hemen önce aranızda ne yaşandı?", elevenLabsSesDosyaAdi = "Dedektif_Soru_Ahmet1" });
             ilkYalanlarDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "İşçi Ahmet", textIcerik = "Ben... Ben hiçbir şey görmedim amirim. Beni bu işlere bulaştırmayın...", elevenLabsSesDosyaAdi = "Ahmet_Korku_Beyan" });
-            ilkYalanlarDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif İç Ses", textIcerik = "Ses telleri tir tir titriyor. Tehdit edildiği veya korktuğu çok açık...", elevenLabsSesDosyaAdi = "Dedektif_IcSes_Ahmet_Suphe" });
-
-            yuzlesmeSuclamaDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif", textIcerik = "Murat'ın dolabında bulduğum bu ağır sakinleştirici ilaç şişesini incelettim...", elevenLabsSesDosyaAdi = "Dedektif_Yuzlesme_Ahmet" });
-            yuzlesmeSuclamaDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "İşçi Ahmet", textIcerik = "Amirim yapmayın, o ilacı Murat'ın kupasına Güvenlik Rıza koydu!", elevenLabsSesDosyaAdi = "Ahmet_Suclama_Riza" });
-            yuzlesmeSuclamaDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif İç Ses", textIcerik = "İnanılmaz... Kusursuz bir yalan çemberi ve döngü tamamlandı! Herkes bir sonrakini suçluyor...", elevenLabsSesDosyaAdi = "Dedektif_IcSes_Ahmet_Analiz" });
+            ilkYalanlarDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif İç Ses", textIcerik = "Ses telleri tir tir titriyor. Tehdit edildiği veya korktuğu çok açık...", elevenLabsSesDosyaAdi = "Dedektif_IlkSorgu_Sonrasi" });
         }
     }
 }

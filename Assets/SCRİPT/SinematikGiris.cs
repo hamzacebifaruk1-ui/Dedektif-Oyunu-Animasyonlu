@@ -8,9 +8,9 @@ using System.Collections;
 public class SinematikGiris : MonoBehaviour
 {
     [Header("Görseller")]
-    public Sprite[] gorseller; // Müfettiş Notu: Inspector'dan en az 6 adet fotoğraf atamalısın (0, 1, 2, 3, 4, 5)
+    public Sprite[] gorseller; // Inspector'dan en az 6 adet fotoğraf atamalısın (0, 1, 2, 3, 4, 5)[cite: 65]
 
-    [Header("UI")]
+    [Header("UI Elemanları")]
     public Image arkaPlanGorsel;
     public Image karartmaEkrani;
     public TextMeshProUGUI altyaziText;
@@ -20,11 +20,11 @@ public class SinematikGiris : MonoBehaviour
     public AudioClip muzikDosyasi;
     private AudioSource muzikSource;
 
-    [Header("Seslendirme")]
-    public AudioClip[] seslendirmeler;
+    [Header("Seslendirmeler")]
+    public AudioClip[] seslendirmeler; // İsteğe bağlı tek tek seslendirme dosyaları[cite: 65]
     private AudioSource seslendirmeSource;
 
-    string[] altyazilar = new string[]
+    private string[] altyazilar = new string[]
     {
         "14 Kasım. Gece 02:30.",
         "Karadeniz Limanı — 3 Numaralı Yükleme İskelesi.",
@@ -37,17 +37,16 @@ public class SinematikGiris : MonoBehaviour
         "Andım olsun ki, bu gece şantiyede gerçeği bulmak için tek bir şansın var."
     };
 
-    // TAMİR EDİLDİ: Altyazı dizisi 9 elemanlı olduğu için bu dizi de tam 9 elemana eşitlendi!
-  // GÜNCELLENDİ: Tam 9 elemanlı, son iki satırda da son görseli (5) gösterecek şekilde ayarlandı
-    int[] gorselIndeksleri = new int[]
+    private int[] gorselIndeksleri = new int[]
     {
-        0, 0,  // 14 Kasım ve Karadeniz Limanı
-        1, 1,  // Murat Çelik ve Polis raporu
-        2,     // Telefon çalma
-        3,     // Eşinin konuşması
-        4,     // "Sen bu şehrin en karanlık gizemlerini çözen dedektifsin."
-        5, 5   // "Andım olsun ki..." ve bitişte son görsel (5)
+        0, 0,  // 14 Kasım ve Karadeniz Limanı[cite: 65]
+        1, 1,  // Murat Çelik ve Polis raporu[cite: 65]
+        2,     // Telefon çalma[cite: 65]
+        3,     // Eşinin konuşması[cite: 65]
+        4,     // "Sen bu şehrin en karanlık gizemlerini..."[cite: 65]
+        5, 5   // "Andım olsun ki..." ve son görsel[cite: 65]
     };
+
     private bool basladi = false;
     private bool gecisYapiliyor = false;
 
@@ -67,7 +66,8 @@ public class SinematikGiris : MonoBehaviour
 
         muzikSource.loop = true;
         muzikSource.playOnAwake = false;
-        muzikSource.volume = 0.4f;
+        muzikSource.volume = 0.25f;
+        
         seslendirmeSource.loop = false;
         seslendirmeSource.playOnAwake = false;
         seslendirmeSource.volume = 1f;
@@ -86,8 +86,9 @@ public class SinematikGiris : MonoBehaviour
         }
         karartmaEkrani.color = new Color(0, 0, 0, 1);
         arkaPlanGorsel.color = new Color(1, 1, 1, 0);
+        
         StartCoroutine(SinematikBaslat());
-        Invoke("BaslamaIzniVer", 2f);
+        Invoke("BaslamaIzniVer", 1.5f);
     }
 
     void BaslamaIzniVer() { basladi = true; }
@@ -99,6 +100,7 @@ public class SinematikGiris : MonoBehaviour
         Keyboard klavye = Keyboard.current;
         if (klavye == null) return;
 
+        // Herhangi bir anda SPACE veya ENTER ile sinematiği geçip doğrudan oyuna aktarabiliriz
         if (klavye.spaceKey.wasPressedThisFrame || klavye.enterKey.wasPressedThisFrame)
         {
             gecisYapiliyor = true;
@@ -114,6 +116,17 @@ public class SinematikGiris : MonoBehaviour
 
         yield return StartCoroutine(FadeYap(1f, 0f, 1.5f));
 
+        // EĞER Inspector'da özel ses dosyaları tanımlanmadıysa, Resources klasöründen ana giriş sesini çek
+        if ((seslendirmeler == null || seslendirmeler.Length == 0) && seslendirmeSource != null)
+        {
+            AudioClip girisSesi = Resources.Load<AudioClip>("Audio/Dialogs/Dedektif_Giris_IcSes");
+            if (girisSesi != null)
+            {
+                seslendirmeSource.clip = girisSesi;
+                seslendirmeSource.Play();
+            }
+        }
+
         int mevcutGorselIndex = -1;
 
         for (int i = 0; i < altyazilar.Length; i++)
@@ -125,7 +138,8 @@ public class SinematikGiris : MonoBehaviour
                 yield return StartCoroutine(GorselGecis(gorseller[yeniGorselIndex]));
             }
 
-            if (seslendirmeSource != null && seslendirmeler != null && i < seslendirmeler.Length && seslendirmeler[i] != null)
+            // Tek tek seslendirme atandıysa onları oynat
+            if (seslendirmeler != null && i < seslendirmeler.Length && seslendirmeler[i] != null)
             {
                 seslendirmeSource.clip = seslendirmeler[i];
                 seslendirmeSource.Play();
@@ -133,10 +147,11 @@ public class SinematikGiris : MonoBehaviour
 
             yield return StartCoroutine(AltyaziYaz(altyazilar[i]));
 
-            if (seslendirmeSource != null && seslendirmeSource.isPlaying)
+            // Ses çalıyorsa bitmesini bekle, yoksa varsayılan olarak 3.5 saniye bekle
+            if (seslendirmeSource != null && seslendirmeSource.isPlaying && (seslendirmeler != null && seslendirmeler.Length > 0))
                 yield return new WaitWhile(() => seslendirmeSource.isPlaying);
             else
-                yield return new WaitForSeconds(2.5f);
+                yield return new WaitForSeconds(3.5f);
 
             yield return StartCoroutine(AltyaziSil(0.5f));
             yield return new WaitForSeconds(0.3f);
@@ -184,7 +199,7 @@ public class SinematikGiris : MonoBehaviour
         foreach (char harf in metin)
         {
             altyaziText.text += harf;
-            yield return new WaitForSeconds(0.04f);
+            yield return new WaitForSeconds(0.035f);
         }
     }
 

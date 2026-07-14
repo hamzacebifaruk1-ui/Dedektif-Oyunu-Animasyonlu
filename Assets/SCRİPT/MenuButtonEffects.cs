@@ -33,12 +33,12 @@ public class MenuButtonEffects : MonoBehaviour, IPointerEnterHandler, IPointerEx
         orjinalLocalPos = transform.localPosition;
         hedefBoyut = normalBoyut;
         
-        // AudioSource bileşenini kur
+        // AudioSource kontrolü
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.playOnAwake = false;
 
-        // Outline (Çerçeve) bileşenini kur
+        // Outline (Çerçeve) kontrolü
         outline = GetComponent<Outline>();
         if (outline == null) outline = gameObject.AddComponent<Outline>();
         
@@ -52,7 +52,7 @@ public class MenuButtonEffects : MonoBehaviour, IPointerEnterHandler, IPointerEx
         // Boyut geçişini yumuşat
         transform.localScale = Vector3.Lerp(transform.localScale, hedefBoyut, Time.deltaTime * animasyonHizi);
 
-        // Titreme Efekti (Sadece titremeOlsun seçiliyse ve fare üzerindeyse)
+        // Titreme efekti açıksa ve fare üzerindeyse
         if (fareUzerinde && titremeOlsun)
         {
             float x = Random.Range(-0.8f, 0.8f);
@@ -61,7 +61,6 @@ public class MenuButtonEffects : MonoBehaviour, IPointerEnterHandler, IPointerEx
         }
         else
         {
-            // Fare çekildiğinde veya titreme kapalıyken orjinal pozisyona yumuşak dön
             transform.localPosition = Vector3.Lerp(transform.localPosition, orjinalLocalPos, Time.deltaTime * animasyonHizi);
         }
     }
@@ -72,9 +71,7 @@ public class MenuButtonEffects : MonoBehaviour, IPointerEnterHandler, IPointerEx
         hedefBoyut = normalBoyut * buyumeOrani;
         
         if (cerceveOlsun && outline != null) outline.enabled = true;
-
         if (hoverSes != null) audioSource.PlayOneShot(hoverSes);
-        
         if (patlamaEfekti != null) patlamaEfekti.Play();
     }
 
@@ -88,7 +85,6 @@ public class MenuButtonEffects : MonoBehaviour, IPointerEnterHandler, IPointerEx
     public void OnPointerDown(PointerEventData eventData)
     {
         if (clickSes != null) audioSource.PlayOneShot(clickSes);
-        // Basılma hissi için boyutu anlık küçült (Update içindeki Lerp bunu düzeltecektir)
         transform.localScale = normalBoyut * 0.85f; 
     }
 }

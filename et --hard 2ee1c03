@@ -1,0 +1,50 @@
+[33me678e3a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{0}: reset: moving to e678e3a
+[33m2ee1c03[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{1}: reset: moving to 2ee1c03
+[33m2ee1c03[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{2}: commit: 1
+[33m2234fd5[m HEAD@{3}: reset: moving to 2234fd5
+[33m2234fd5[m HEAD@{4}: reset: moving to HEAD
+[33m2234fd5[m HEAD@{5}: reset: moving to HEAD
+[33m2234fd5[m HEAD@{6}: reset: moving to HEAD
+[33m2234fd5[m HEAD@{7}: commit: yeni olay akışı ve yeni sistem
+[33m629c7b5[m HEAD@{8}: commit: v_3
+[33m797611e[m HEAD@{9}: commit: 3D_delil sistemi
+[33mb58a2d6[m HEAD@{10}: commit: 2
+[33mb7d7ed5[m HEAD@{11}: commit: MİNİ MAP VE MAP SİTMİ YAPLIDI V_2
+[33mfc9aff9[m HEAD@{12}: commit: v_2.1
+[33m4c9f96b[m HEAD@{13}: commit: optimize_v2
+[33mbe42fd4[m HEAD@{14}: commit: 2
+[33mb2439a1[m HEAD@{15}: reset: moving to b2439a1
+[33mc42abe5[m HEAD@{16}: reset: moving to c42abe5
+[33mc42abe5[m HEAD@{17}: reset: moving to c42abe5
+[33mc42abe5[m HEAD@{18}: pull --ff --recurse-submodules --progress origin: Fast-forward
+[33mac397bd[m HEAD@{19}: reset: moving to ac397bd
+[33mc42abe5[m HEAD@{20}: pull --ff --recurse-submodules --progress origin: Fast-forward
+[33mb2439a1[m HEAD@{21}: reset: moving to HEAD
+[33mb2439a1[m HEAD@{22}: reset: moving to HEAD~1
+[33mf6f4e6b[m HEAD@{23}: reset: moving to HEAD~1
+[33mc42abe5[m HEAD@{24}: commit: Optimize-Envirionment
+[33mf6f4e6b[m HEAD@{25}: pull --ff --recurse-submodules --progress origin: Fast-forward
+[33mb2439a1[m HEAD@{26}: reset: moving to HEAD
+[33mb2439a1[m HEAD@{27}: reset: moving to HEAD~1
+[33mf6f4e6b[m HEAD@{28}: reset: moving to HEAD
+[33mf6f4e6b[m HEAD@{29}: reset: moving to f6f4e6bbc6939a35e43efb2ba9f442edae73fbe1
+[33mf6f4e6b[m HEAD@{30}: reset: moving to HEAD
+[33mf6f4e6b[m HEAD@{31}: commit: MAP system
+[33mb2439a1[m HEAD@{32}: commit: SON KISMEN
+[33me678e3a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{33}: commit: 1
+[33mac397bd[m HEAD@{34}: commit: son yüklme
+[33m5e9d59b[m HEAD@{35}: commit: Duraklatma menüsü butonları bağlandı, HUD yön göstergesi düz metne çevrildi ve animasyon hatası çözüldü SON
+[33m470c03c[m HEAD@{36}: commit: Duraklatma menüsü butonları bağlandı, HUD yön göstergesi düz metne çevrildi ve animasyon hatası çözüldü2
+[33m1db7b50[m HEAD@{37}: commit: Duraklatma menüsü butonları bağlandı, HUD yön göstergesi düz metne çevrildi ve animasyon hatası çözüldü
+[33m2dd7288[m HEAD@{38}: commit: "Görev sistemi arayüz temizliği ve dinamik mesafe takibi eklendi"
+[33m7bf7ffc[m HEAD@{39}: commit: NPC görev sitemi
+[33m41172d4[m HEAD@{40}: commit: npc olay akışı
+[33m9add2c0[m HEAD@{41}: commit: optimizasyon 2 fps sabit vsyc
+[33m306d541[m HEAD@{42}: commit: optimizasyon
+[33me38aefc[m HEAD@{43}: commit: NpcDiyalog.sistem
+[33m75d1f9c[m HEAD@{44}: commit: gün
+[33mbc38856[m HEAD@{45}: commit: GunDogumu_Liman_Profile
+[33m3f518dd[m HEAD@{46}: commit: Refactor: Movement system input fix and URP flashlight calibration
+[33mffe08f2[m HEAD@{47}: commit: NPCdialog
+[33mf71bebe[m HEAD@{48}: commit: son yükleme\1
+[33m293b2b4[m HEAD@{49}: clone: from https://github.com/hamzacebifaruk1-ui/Dedektif-Oyunu-Animasyonlu.git
