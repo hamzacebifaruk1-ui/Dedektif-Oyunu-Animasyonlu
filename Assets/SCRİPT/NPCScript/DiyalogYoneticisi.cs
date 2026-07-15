@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.InputSystem; // Yeni Input Sistemi eklendi!
 
 [System.Serializable]
 public class DiyalogSatiri
@@ -36,6 +37,7 @@ public class DiyalogYoneticisi : MonoBehaviour
     private int gecerliSatirIndex = 0;
     public bool diyalogAktif = false;
     private Coroutine daktiloCoroutine;
+    private Coroutine otomatikGecisCoroutine; 
     private bool yaziAkiyorMu = false;
     private string tamMetin = "";
     private string suAnkiNpcAdi = "";
@@ -80,23 +82,27 @@ public class DiyalogYoneticisi : MonoBehaviour
 
     void Update()
     {
-        var klavye = UnityEngine.InputSystem.Keyboard.current;
-        var fare = UnityEngine.InputSystem.Mouse.current;
-
-        bool spaceBasildi = klavye != null && klavye.spaceKey.wasPressedThisFrame;
-        bool solTiklandi = fare != null && fare.leftButton.wasPressedThisFrame;
-
-        if (diyalogAktif && (spaceBasildi || solTiklandi))
+        // ==========================================================
+        // ⚡ HIZLI GEÇİŞ: Shift + Enter basılırsa konuşmayı anında bitir (New Input System)
+        // ==========================================================
+        if (diyalogAktif && Keyboard.current != null)
         {
-            if (yaziAkiyorMu)
+            if (Keyboard.current.leftShiftKey.isPressed && Keyboard.current.enterKey.wasPressedThisFrame)
             {
-                DurdurVeMetniTamamla();
-            }
-            else
-            {
-                SonrakiSatiraGec();
+                DiyaloguHizliGec();
             }
         }
+    }
+
+    public void DiyaloguHizliGec()
+    {
+        Debug.Log("[HIZLI GEÇ] NPC Diyaloğu oyuncu tarafından atlandı.");
+
+        if (daktiloCoroutine != null) StopCoroutine(daktiloCoroutine);
+        if (otomatikGecisCoroutine != null) StopCoroutine(otomatikGecisCoroutine);
+        if (audioSource != null) audioSource.Stop();
+
+        DiyaloguBitir();
     }
 
     public void DiyalogBaslat(List<DiyalogSatiri> yeniDiyalog, string npcAdi)
@@ -146,6 +152,9 @@ public class DiyalogYoneticisi : MonoBehaviour
 
         if (daktiloCoroutine != null) StopCoroutine(daktiloCoroutine);
         daktiloCoroutine = StartCoroutine(YaziyiDokCoroutine(tamMetin));
+
+        if (otomatikGecisCoroutine != null) StopCoroutine(otomatikGecisCoroutine);
+        otomatikGecisCoroutine = StartCoroutine(OtomatikGecisCoroutine(klip));
     }
 
     IEnumerator YaziyiDokCoroutine(string metin)
@@ -160,6 +169,29 @@ public class DiyalogYoneticisi : MonoBehaviour
         }
 
         yaziAkiyorMu = false;
+    }
+
+    IEnumerator OtomatikGecisCoroutine(AudioClip klip)
+    {
+        while (yaziAkiyorMu)
+        {
+            yield return null;
+        }
+
+        if (klip != null && audioSource != null)
+        {
+            while (audioSource.isPlaying)
+            {
+                yield return null;
+            }
+        }
+        else
+        {
+            yield return new WaitForSeconds(2.5f);
+        }
+
+        yield return new WaitForSeconds(0.5f);
+        SonrakiSatiraGec();
     }
 
     void DurdurVeMetniTamamla()
@@ -179,11 +211,23 @@ public class DiyalogYoneticisi : MonoBehaviour
     {
         diyalogAktif = false;
         diyalogPaneli.SetActive(false);
-        audioSource.Stop();
+        if (audioSource != null) audioSource.Stop();
+
+        if (otomatikGecisCoroutine != null) StopCoroutine(otomatikGecisCoroutine);
 
         if (!string.IsNullOrEmpty(suAnkiNpcAdi) && suAnkiNpcAdi != "GirisIcSes")
         {
             konusulanNpcListesi.Add(suAnkiNpcAdi);
+
+            if (GorevYoneticisi.Instance != null)
+            {
+                GorevYoneticisi.Instance.NPCIleKonusmaBitti(suAnkiNpcAdi);
+            }
+            else
+            {
+                Debug.LogWarning("[UYARI] Sahnede 'GorevYoneticisi' bulunamadığı için görev tetiklenemedi!");
+            }
+
             GorevKontrolEt();
         }
 
@@ -207,18 +251,17 @@ public class DiyalogYoneticisi : MonoBehaviour
             if (delilYazisiText != null)
             {
                 delilYazisiText.gameObject.SetActive(true);
-                delilYazisiText.text = "Toplanan Delil: 0 / 8"; // 8 Delilli yeni mantık tablosuna eşitlendi!
+                delilYazisiText.text = "Toplanan Delil: 0 / 8"; 
             }
 
-            // Harita İkonlarını Göster
             BuyukHaritaYonetici buyukHarita = FindFirstObjectByType<BuyukHaritaYonetici>();
             if (buyukHarita != null) buyukHarita.NpcIkonlariniGoster(true);
 
             MinimapYonetici minimap = FindFirstObjectByType<MinimapYonetici>();
             if (minimap != null) minimap.NpcIkonlariniGoster(true);
             
-            // İlk sorgu bittiğinde çalan ses
-            audioSource.PlayOneShot(Resources.Load<AudioClip>("Audio/Dialogs/Dedektif_IlkSorgu_Sonrasi"));
+            if (audioSource != null)
+                audioSource.PlayOneShot(Resources.Load<AudioClip>("Audio/Dialogs/Dedektif_IlkSorgu_Sonrasi"));
         }
     }
 }

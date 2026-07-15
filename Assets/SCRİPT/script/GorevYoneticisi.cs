@@ -1,150 +1,396 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem; 
+using System.Collections.Generic;
 
 public class GorevYoneticisi : MonoBehaviour
 {
     public static GorevYoneticisi Instance;
 
+    public enum GorevAsamasi
+    {
+        GirisSinematigi,       
+        RizaSorgu,             
+        KemalSorgu,            
+        AhmetSorgu,            
+        RizaOfisArama,         
+        KemalOfisArama,        
+        AhmetYuzlesmeSecim,    
+        KalanDelilleriTopla,   
+        DelilTasnifPanosu,     
+        FinalSuclama           
+    }
+
+    [Header("Mevcut Oyun Aşaması")]
+    public GorevAsamasi mevcutAsama = GorevAsamasi.GirisSinematigi; 
+
     [Header("UI Elemanları")]
-    public TextMeshProUGUI gorevText;
+    public TextMeshProUGUI gorevText; 
     public TextMeshProUGUI ipucuText; 
+    public GameObject tebriklerPanel; 
+    public GameObject kaybettinPanel; 
 
-    [Header("Mesafe Hedef Objeleri (Mesafe Takibi İçin)")]
-    public GameObject kemalObjesi;
-    public GameObject ahmetObjesi;
-    public GameObject rizaObjesi;
-    public GameObject odadakiDelilObjesi; 
+    [Header("Ses Entegrasyonu")]
+    public AudioSource icSesKaynagi; 
 
-    [Header("Görev Durumları")]
-    public bool kemalleKonusuldu = false;
-    public bool ilacKutusuAlindi = false; 
-    public bool ahmetleKonusuldu = false; 
-    public bool odaVePanoIncelendi = false; 
-    public bool kemalPanikledi = false;    
-    public bool teknikDelillerAlindi = false; 
-    public bool rizaItirafEtti = false;
-    public bool kameraKaydiBulundu = false; 
-    public bool finalHesaplasmaBitti = false; 
+    // Delil Sayaçları
+    private int toplananIlkAramaDelilleri = 0; 
+    private int toplananIkinciAramaDelilleri = 0; 
+    private int toplananSonAramaDelilleri = 0; 
 
-    [HideInInspector] public bool kirikTelAlindi = false;
-    [HideInInspector] public bool kirikKancaAlindi = false;
+    // Çift Tetiklenmeyi Önleyen Liste
+    private HashSet<string> toplananDelillerSeti = new HashSet<string>();
 
     void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance == null)
+        {
+            Instance = this; 
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject); 
+        }
+    }
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     void Start()
     {
-        GoreviListele();
+        ReferanslariBul();
+        StartCoroutine(GirisSinematiginiOynat()); 
     }
 
-    public void GoreviListele()
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (gorevText == null) return;
+        ReferanslariBul();
+    }
 
-        string guncelMetin = "";
+    public void ReferanslariBul()
+    {
+        if (gorevText == null)
+        {
+            GameObject gorevObj = GameObject.Find("GorevYazisi");
+            if (gorevObj != null) gorevText = gorevObj.GetComponent<TextMeshProUGUI>();
+        }
+
+        if (ipucuText == null)
+        {
+            GameObject ipucuObj = GameObject.Find("IpucuYazisi");
+            if (ipucuObj != null) ipucuText = ipucuObj.GetComponent<TextMeshProUGUI>();
+        }
+
+        if (tebriklerPanel == null) tebriklerPanel = GameObject.Find("TebriklerPaneli");
+        if (kaybettinPanel == null) kaybettinPanel = GameObject.Find("KaybettinPaneli");
+
+        if (tebriklerPanel != null) tebriklerPanel.SetActive(false); 
+        if (kaybettinPanel != null) kaybettinPanel.SetActive(false); 
+
+        if (icSesKaynagi == null)
+        {
+            icSesKaynagi = GetComponent<AudioSource>();
+            if (icSesKaynagi == null)
+            {
+                icSesKaynagi = gameObject.AddComponent<AudioSource>();
+            }
+        }
+
+        GoreviGuncelle();
+        SyncDiyalogYazisi();
+    }
+
+    private System.Collections.IEnumerator GirisSinematiginiOynat()
+    {
+        AudioClip girisSes = Resources.Load<AudioClip>("Audio/Sounds/Dedektif_Giris_IcSes"); 
+        if (icSesKaynagi != null && girisSes != null) 
+        {
+            icSesKaynagi.clip = girisSes; 
+            icSesKaynagi.Play(); 
+            
+            float elapsed = 0f;
+            float duration = girisSes.length + 1f;
+
+            while (elapsed < duration)
+            {
+                if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed && Keyboard.current.enterKey.wasPressedThisFrame)
+                {
+                    icSesKaynagi.Stop();
+                    Debug.Log("[HIZLI GEÇ] Giriş sinematiği oyuncu tarafından geçildi.");
+                    break;
+                }
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+        }
+        else
+        {
+            yield return new WaitForSeconds(1f); 
+        }
+
+        AsamaAtla(GorevAsamasi.RizaSorgu);
+    }
+
+    public void AsamaAtla(GorevAsamasi yeniAsama)
+    {
+        mevcutAsama = yeniAsama; 
+        Debug.Log($"[GÖREV SİSTEMİ] Yeni Aşamaya Geçildi: {yeniAsama}");
+        GoreviGuncelle(); 
+        SyncDiyalogYazisi(); 
+    }
+
+    public void GoreviGuncelle()
+    {
+        if (gorevText == null) return; 
+
+        string guncelMetin = ""; 
         string guncelIpucu = ""; 
 
-        // Aşama 1: Kemal İlk Konuşma (Açık hedef yok)
-        if (!kemalleKonusuldu)
+        switch (mevcutAsama) 
         {
-            guncelMetin = "<color=white>Soruşturma Başladı: Olay yerindeki en yetkili isimden ilk bilgileri al.</color>\n";
-            guncelIpucu = "Düşünce: Şantiyenin idari işlerinden sorumlu kişiyle görüşmeliyim. Odası buralarda bir yerde olmalı.";
-        }
-        // Aşama 2: İlaç Kutusu Arama (Yer söylenmiyor, vinç etrafı ima ediliyor)
-        else if (kemalleKonusuldu && !ilacKutusuAlindi)
-        {
-            guncelMetin = "<color=yellow>Şüphe: Olay yerinde gözden kaçan fiziksel bir iz veya kalıntı var mı? Çevreyi tara.</color>\n";
-            guncelIpucu = "Düşünce: Kazanın meydana geldiği o devasa vincin yakınlarında şüpheli bir şeyler kalmış olabilir.";
-        }
-        // Aşama 3: Ahmet Sorgusu (Ahmet denmiyor, görgü tanığı deniyor)
-        else if (ilacKutusuAlindi && !ahmetleKonusuldu)
-        {
-            guncelMetin = "<color=orange>Sorgu: Bulunan tıbbi malzemeyi şantiyede çalışan işçilere sor.</color>\n";
-            guncelIpucu = "Düşünce: Kazayı en yakından gören, dinlenme alanlarındaki işçilerden biri bu kutunun kime ait olduğunu bilebilir.";
-        }
-        // Aşama 4: Oda ve Pano Inceleme (Gizlice girme vurgusu)
-        else if (ahmetleKonusuldu && !odaVePanoIncelendi)
-        {
-            guncelMetin = "<color=green>Arama: Resmi ifadeler çelişiyor. Yönetim ofisindeki belgeleri gizlice incele.</color>\n";
-            guncelIpucu = "Düşünce: Ofisteki panoda ve masanın üzerinde saklanan evraklar resmi rapordan daha fazlasını anlatıyor olabilir.";
-        }
-        // Aşama 5: Kemal Panik / Köşeye Sıkıştırma
-        else if (odaVePanoIncelendi && !kemalPanikledi)
-        {
-            guncelMetin = "<color=red>Yüzleşme: Belgelerdeki çelişkileri idareye sun ve tepkisini ölç.</color>\n";
-            guncelIpucu = "Düşünce: Bulduğum notları müdüre gösterdiğimde vereceği tepki, suçluluk psikolojisini ele verecektir.";
-        }
-        // Aşama 6: Teknik Deliller (Tel ve Kanca)
-        else if (kemalPanikledi && !teknikDelillerAlindi)
-        {
-            guncelMetin = "<color=purple>Analiz: Kazaya sebep olan mekanik parçayı (Kırık Vinç Teli) bul ve incele.</color>\n";
-            guncelIpucu = "Düşünce: Metal yorgunluğu mu yoksa sabotaj mı? Parçalar sahil kenarına ya da hurdalığa atılmış olmalı.";
-        }
-        // Aşama 7: Güvenlik Rıza Sorgusu ve USB Arama Aşamaları
-        else if (teknikDelillerAlindi && !kameraKaydiBulundu)
-        {
-            if (!rizaItirafEtti)
-            {
-                guncelMetin = "<color=lightblue>Sorgu: Olay gecesi çevre güvenliğinden sorumlu olan personeli sıkıştır.</color>\n";
-                guncelIpucu = "Düşünce: Giriş kapısındaki kulübede duran görevli, o gece kimlerin şantiyeye sızdığını kesinlikle biliyor.";
-            }
-            else
-            {
-                guncelMetin = "<color=#00FF66>Arama: Saklanan gerçeğin peşine düş. Gizlenen dijital kaydı (USB) bul.</color>\n";
-                guncelIpucu = "Düşünce: Şantiyenin dış sınırındaki o yüksek gerilim trafosunun etrafından tuhaf sesler geliyor, orayı kurcalamalıyım.";
-            }
-        }
-        // Oyun Sonu Final Kontrolü
-        else if (kameraKaydiBulundu)
-        {
-            if (!finalHesaplasmaBitti)
-            {
-                guncelMetin = "<color=red><b>[HESAPLAŞMA] Elindeki tüm kartları masaya dökme vakti.</b></color>\n";
-                guncelIpucu = "Düşünce: Tüm veriler toplandı. İdari ofise geri dönüp son bir görüşme yapma zamanı.";
-            }
-            else
-            {
-                guncelMetin = "<color=#FFD700><b>[FİNAL] Karar Anı: Suçlu Kim?</b></color>\n";
-                guncelIpucu = "Düşünce: Dedektif masasına dön. Elindeki delillere göre faili seç. Geri dönüşü yok!";
-            }
+            case GorevAsamasi.GirisSinematigi:
+                guncelMetin = "<color=gray>Giriş: Olay mahalline varılıyor...</color>"; 
+                guncelIpucu = "Düşünce: Murat'ın düştüğü yerde bir şeyler dönüyor. Kanıtları bulmalıyım."; 
+                break;
+
+            case GorevAsamasi.RizaSorgu:
+                guncelMetin = "<color=white>GÖREV: Güvenlik Rıza ile konuş ve ilk ifadesini al.</color>"; 
+                guncelIpucu = "İpucu: Haritadan güvenlik kulübesinin yerini bularak oraya yönel."; 
+                break;
+
+            case GorevAsamasi.KemalSorgu:
+                guncelMetin = "<color=white>GÖREV: Liman Müdürü Kemal ile konuş.</color>"; 
+                guncelIpucu = "İpucu: Ofis binasının girişinde seni bekleyen müdürün yanına git."; 
+                break;
+
+            case GorevAsamasi.AhmetSorgu:
+                guncelMetin = "<color=white>GÖREV: İşçi Ahmet ile görüş.</color>"; 
+                guncelIpucu = "İpucu: Şantiye sahasında varil ateşinin başında ısınan işçiyi bul."; 
+                break;
+
+            case GorevAsamasi.RizaOfisArama:
+                guncelMetin = $"<color=yellow>GÖREV: Güvenlik kulübesini ve çevresini araştır ({toplananIlkAramaDelilleri}/2).</color>"; 
+                guncelIpucu = "Düşünce: Rıza elektrik kesildi dedi ama yalan söylüyor gibi. Güvenlik Kamera Kaydını ve dışarıdaki lastik izlerini ara."; 
+                break;
+
+            case GorevAsamasi.KemalOfisArama:
+                guncelMetin = $"<color=orange>GÖREV: Kemal Müdürün odasını gizlice araştır ({toplananIkinciAramaDelilleri}/3).</color>"; 
+                guncelIpucu = "Düşünce: Kasadaki evrakları, masadaki yırtık fotoğrafı ve dolaptaki ilaç şişesini bul."; 
+                break;
+
+            case GorevAsamasi.AhmetYuzlesmeSecim:
+                guncelMetin = "<color=red>GÖREV: Ahmet ile yüzleş ve ona doğru soruları sor.</color>"; 
+                guncelIpucu = "İpucu: Ahmet'in yanına git ve 'E' tuşuna basarak kader seçimini yap."; 
+                break;
+
+            case GorevAsamasi.KalanDelilleriTopla:
+                guncelMetin = $"<color=purple>GÖREV: Şantiyede kalan mekanik ve çevre delillerini topla ({toplananSonAramaDelilleri}/3).</color>"; 
+                guncelIpucu = "Düşünce: Ahmet'in itiraflarından sonra atölyedeki spiral makinesini, kesik teli ve bareti bulmalıyım."; 
+                break;
+
+            case GorevAsamasi.DelilTasnifPanosu:
+                guncelMetin = "<color=lightblue>GÖREV: Toplanan kanıtları panoda analiz et.</color>"; 
+                guncelIpucu = "İpucu: 'I' tuşuna basarak Envanter Panosunu aç ve delilleri [GERÇEK] - [SAHTE] olarak etiketle."; 
+                break;
+
+            case GorevAsamasi.FinalSuclama:
+                guncelMetin = "<color=red><b>[FİNAL] GÖREV: Gerçek suçluyu bularak onu suçla ve tutukla!</b></color>"; 
+                guncelIpucu = "İpucu: Suçlunun yanına giderek etkileşime gir. Yanlış kişiyi suçlarsan her şey biter."; 
+                break;
         }
 
-        gorevText.text = guncelMetin;
-        if (ipucuText != null) ipucuText.text = guncelIpucu;
-
-        // --- HEDEF TAKİPÇİ DEĞİŞİKLİĞİ (Artık pusula oyuncuyu direkt adama götürmeyecek, serbest arayacak!) ---
-        if (HedefTakipci.Instance != null)
-        {
-            // Oyuncu tamamen kaybolmasın diye sadece ilk görevde yön gösteriyoruz, sonrasında pusulayı kapatıyoruz!
-            if (!kemalleKonusuldu) HedefTakipci.Instance.HedefDegistir(kemalObjesi, "İdari Ofis");
-            else HedefTakipci.Instance.HedefDegistir(null, ""); // Diğer tüm aşamalarda hedef boş kalıyor, oyuncu kendi bulacak!
-        }
+        gorevText.text = guncelMetin; 
+        if (ipucuText != null) ipucuText.text = guncelIpucu; 
     }
 
-    public void FinalHesaplasmaTamamla()
+    public void NPCIleKonusmaBitti(string npcAdi)
     {
-        finalHesaplasmaBitti = true;
-        GoreviListele();
+        if (string.IsNullOrEmpty(npcAdi)) return;
 
-        if (DelilYoneticisi.Instance != null)
+        string nameClean = npcAdi.Trim().ToLower();
+        Debug.Log($"[GÖREV SİSTEMİ] Gelen İsim: {npcAdi} | Mevcut Aşama: {mevcutAsama}");
+
+        bool isRiza = nameClean.Contains("riza") || nameClean.Contains("rıza") || nameClean.Contains("güvenlik");
+        if (mevcutAsama == GorevAsamasi.RizaSorgu && isRiza)
         {
-            DelilYoneticisi.Instance.GorevTamamlandiPaneliAc();
+            AsamaAtla(GorevAsamasi.KemalSorgu);
+            return;
         }
-        else if (SecimYoneticisi.Instance != null)
+
+        bool isKemal = nameClean.Contains("kemal") || nameClean.Contains("müdür") || nameClean.Contains("mudur");
+        if (mevcutAsama == GorevAsamasi.KemalSorgu && isKemal)
         {
-            SecimYoneticisi.Instance.SecimEkraniniAc();
+            AsamaAtla(GorevAsamasi.AhmetSorgu);
+            return;
+        }
+
+        bool isAhmet = nameClean.Contains("ahmet") || nameClean.Contains("işçi") || nameClean.Contains("isci");
+        if (mevcutAsama == GorevAsamasi.AhmetSorgu && isAhmet)
+        {
+            AsamaAtla(GorevAsamasi.RizaOfisArama);
+            return;
         }
     }
 
-    public void KemalGoreviniTamamla() { if (!kemalleKonusuldu) kemalleKonusuldu = true; GoreviListele(); }
-    public void KemalPanikGoreviniTamamla() { kemalPanikledi = true; GoreviListele(); }
-    public void RizaGoreviniTamamla() { rizaItirafEtti = true; GoreviListele(); }
-    public void IlacKutusuBulundu() { ilacKutusuAlindi = true; GoreviListele(); }
-    public void AhmetGoreviniTamamla() { ahmetleKonusuldu = true; GoreviListele(); }
-    public void OdaVePanoTamamla() { odaVePanoIncelendi = true; GoreviListele(); }
-    public void TeknikDelillerTamamla() { teknikDelillerAlindi = true; GoreviListele(); }
-    public void KameraKaydiBulunduTamamla() { kameraKaydiBulundu = true; GoreviListele(); }
+    public void DelilToplandi(string delilAdi)
+    {
+        ReferanslariBul();
+
+        if (toplananDelillerSeti.Contains(delilAdi))
+        {
+            Debug.Log($"[GÖREV SİSTEMİ] {delilAdi} zaten toplanmıştı. Çift sayım engellendi.");
+            return; 
+        }
+
+        toplananDelillerSeti.Add(delilAdi);
+        Debug.Log($"[GÖREV SİSTEMİ] Yeni delil toplandı: {delilAdi}");
+
+        if (mevcutAsama == GorevAsamasi.RizaOfisArama) 
+        {
+            if (delilAdi == "USB Bellek" || delilAdi == "Güvenlik Kamera Kaydı" || delilAdi == "Çamurlu Lastik İzi") 
+            {
+                toplananIlkAramaDelilleri++; 
+                if (gorevText != null) 
+                    gorevText.text = $"<color=yellow>GÖREV: Güvenlik kulübesini araştır ({toplananIlkAramaDelilleri}/2).</color>"; 
+                SyncDiyalogYazisi();
+
+                if (toplananIlkAramaDelilleri >= 2) 
+                {
+                    StartCoroutine(SesOynatVeAsamaGec("Dedektif_usb_Bulundu_IcSes", GorevAsamasi.KemalOfisArama)); 
+                }
+            }
+        }
+        else if (mevcutAsama == GorevAsamasi.KemalOfisArama) 
+        {
+            if (delilAdi == "Şirket Evrakları" || delilAdi == "Yırtık Kadın Fotoğrafı" || delilAdi == "Boş İlaç Şişesi") 
+            {
+                toplananIkinciAramaDelilleri++; 
+                if (gorevText != null) 
+                    gorevText.text = $"<color=orange>GÖREV: Kemal Müdürün odasını araştır ({toplananIkinciAramaDelilleri}/3).</color>"; 
+                SyncDiyalogYazisi();
+
+                if (toplananIkinciAramaDelilleri >= 3) 
+                {
+                    StartCoroutine(SesOynatVeAsamaGec("Dedektif_Evrak_Bulundu_IcSes", GorevAsamasi.AhmetYuzlesmeSecim)); 
+                }
+            }
+        }
+        else if (mevcutAsama == GorevAsamasi.KalanDelilleriTopla) 
+        {
+            if (delilAdi == "Spiral Taşlama Makinesi" || delilAdi == "Kırık Vinç Teli" || delilAdi == "Kirlenmiş Baret") 
+            {
+                toplananSonAramaDelilleri++; 
+                if (gorevText != null) 
+                    gorevText.text = $"<color=purple>GÖREV: Kalan mekanik delilleri topla ({toplananSonAramaDelilleri}/3).</color>"; 
+                SyncDiyalogYazisi();
+
+                if (toplananSonAramaDelilleri >= 3) 
+                {
+                    StartCoroutine(SesOynatVeAsamaGec("Dedektif_Pano_Hazir_IcSes", GorevAsamasi.DelilTasnifPanosu)); 
+                }
+            }
+        }
+    }
+
+    private void SyncDiyalogYazisi()
+    {
+        if (DiyalogYoneticisi.Instance != null && DiyalogYoneticisi.Instance.gorevYazisiText != null && gorevText != null) 
+        {
+            DiyalogYoneticisi.Instance.gorevYazisiText.text = gorevText.text; 
+        }
+    }
+
+    private System.Collections.IEnumerator SesOynatVeAsamaGec(string sesAdi, GorevAsamasi sonrakiAsama)
+    {
+        AudioClip clip = null;
+
+        try
+        {
+            clip = Resources.Load<AudioClip>("Audio/Sounds/" + sesAdi);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"[GÖREV SİSTEMİ] Ses dosyası yüklenemedi: {e.Message}");
+        }
+
+        if (icSesKaynagi != null && clip != null) 
+        {
+            try
+            {
+                icSesKaynagi.clip = clip; 
+                icSesKaynagi.Play(); 
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"[GÖREV SİSTEMİ] Ses çalma hatası: {e.Message}");
+            }
+
+            float elapsed = 0f;
+            float duration = clip.length + 0.5f;
+
+            while (elapsed < duration)
+            {
+                if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed && Keyboard.current.enterKey.wasPressedThisFrame)
+                {
+                    icSesKaynagi.Stop();
+                    Debug.Log("[HIZLI GEÇ] Dedektif iç sesi oyuncu tarafından geçildi.");
+                    break;
+                }
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+        }
+        else
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        AsamaAtla(sonrakiAsama); 
+    }
+
+    public void OyunuKaybet()
+    {
+        if (kaybettinPanel != null) 
+        {
+            kaybettinPanel.SetActive(true); 
+            Cursor.lockState = CursorLockMode.None; 
+            Cursor.visible = true; 
+        }
+    }
+
+    public void OyunuKazan()
+    {
+        if (tebriklerPanel != null) 
+        {
+            tebriklerPanel.SetActive(true); 
+            Cursor.lockState = CursorLockMode.None; 
+            Cursor.visible = true; 
+        }
+    }
+
+    public void TekrarDene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); 
+    }
+
+    public void AnaMenuyeDon()
+    {
+        SceneManager.LoadScene("AnaMenuSahnendekiAd"); 
+    }
+
+    // ⚡ YENİ EKLENEN KÖPRÜ FONKSİYONU
+    // DelilPanosuSistemi'nin toplanan delillere ulaşabilmesi için bu fonksiyon şart!
+    public HashSet<string> GetToplananDeliller()
+    {
+        return toplananDelillerSeti;
+    }
 }

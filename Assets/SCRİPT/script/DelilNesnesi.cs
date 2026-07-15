@@ -28,23 +28,19 @@ public class DelilNesnesi : MonoBehaviour
         if (toplandiMi) return false;
 
         // >>> %100 GARANTİLİ KONTROL KATMANI <<<
-        // "3 Şüpheliyle konuşuldu, görev tetiklendi!" anında çalışan sistem diyalog yöneticisindedir.
         if (DiyalogYoneticisi.Instance != null && DiyalogYoneticisi.Instance.delilYazisiText != null)
         {
-            // Eğer senin ekrandaki "Toplanan Delil: 0 / 5" yazısını tutan sayaç UI nesnesi 
-            // hiyerarşide AKTİF DEĞİLSE (yani konuşmalar bitip görev tetiklenmediyse) KESİNLİKLE FALSE DÖN!
+            // Eğer ekrandaki delil sayacı UI nesnesi aktif değilse (konuşmalar bitmediyse) toplamayı engelle
             if (!DiyalogYoneticisi.Instance.delilYazisiText.gameObject.activeInHierarchy)
             {
-                return false; // Konuşmalar bitene kadar yazı çıkmaz, nesne toplanmaz!
+                return false; 
             }
         }
         else
         {
-            // Eğer sahnede diyalog yöneticisi henüz uyanmadıysa koruma amaçlı engelle
             return false;
         }
 
-        // --- Konuşmalar bittiyse (Yazı aktif olduysa) artık tüm delillere doğrudan izin ver ---
         return !toplandiMi;
     }
 
@@ -55,6 +51,7 @@ public class DelilNesnesi : MonoBehaviour
 
         toplandiMi = true;
 
+        // 1. Fiziksel toplama ses efektini çal
         if (toplamaSesi != null)
         {
             GameObject sesObjesi = new GameObject("GeciciSesOynatici");
@@ -66,11 +63,40 @@ public class DelilNesnesi : MonoBehaviour
             Destroy(sesObjesi, toplamaSesi.length);
         }
 
+        // 2. 3D İnceleme Ekranını Aç (Eğer sistem sahnede varsa)
         if (DelilIncelemeSistemi.Instance != null)
         {
             DelilIncelemeSistemi.Instance.IncelemeyiBaslat(delilPrefab, delilAdi, incelemeBoyutu, incelemeMesafesi);
         }
 
+        // ===================================================
+        // 🚨 YENİ: SİSTEMLER ARASI İLETİŞİM KÖPRÜSÜ 🚨
+        // ===================================================
+        
+        // Delil yöneticisine bu delilin bulunduğunu haber ver 
+        // (Bu sayede sayaç artar, açıklama yazılır ve dedektif iç sesi oynatılır)
+        if (DelilYoneticisi.Instance != null)
+        {
+            DelilYoneticisi.Instance.DelilBulundu(delilAdi);
+        }
+        else
+        {
+            Debug.LogWarning("[UYARI] Sahnede DelilYoneticisi bulunamadığı için delil işlenemedi!");
+        }
+
+        // Görev yöneticisine haber ver (Arama aşamalarında hedefleri günceller ve aşama atlatır)
+        if (GorevYoneticisi.Instance != null)
+        {
+            GorevYoneticisi.Instance.DelilToplandi(delilAdi);
+        }
+        else
+        {
+            Debug.LogWarning("[UYARI] Sahnede GorevYoneticisi bulunamadığı için görev ilerletilemedi!");
+        }
+        
+        // ===================================================
+
+        // Görsel ve fiziksel olarak sahnedeki nesneyi kapat (İnceleme bitene kadar yok etmiyoruz)
         if (GetComponent<MeshRenderer>() != null) GetComponent<MeshRenderer>().enabled = false;
         foreach (var childRenderer in GetComponentsInChildren<Renderer>()) childRenderer.enabled = false;
         if (GetComponent<Collider>() != null) GetComponent<Collider>().enabled = false;
