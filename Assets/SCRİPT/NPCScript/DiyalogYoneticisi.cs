@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.InputSystem; // Yeni Input Sistemi eklendi!
+using UnityEngine.InputSystem;
 
 [System.Serializable]
 public class DiyalogSatiri
@@ -63,7 +63,6 @@ public class DiyalogYoneticisi : MonoBehaviour
             delilObjesi.SetActive(false); 
         }
 
-        // --- SAHNE 2 BAŞLANGICI: DEDEKTİFİN GİRİŞ İÇ SESİNİ TETİKLE ---
         Invoke("GirisMonologuOynat", 1f);
     }
 
@@ -82,9 +81,6 @@ public class DiyalogYoneticisi : MonoBehaviour
 
     void Update()
     {
-        // ==========================================================
-        // ⚡ HIZLI GEÇİŞ: Shift + Enter basılırsa konuşmayı anında bitir (New Input System)
-        // ==========================================================
         if (diyalogAktif && Keyboard.current != null)
         {
             if (Keyboard.current.leftShiftKey.isPressed && Keyboard.current.enterKey.wasPressedThisFrame)
@@ -217,18 +213,23 @@ public class DiyalogYoneticisi : MonoBehaviour
 
         if (!string.IsNullOrEmpty(suAnkiNpcAdi) && suAnkiNpcAdi != "GirisIcSes")
         {
-            konusulanNpcListesi.Add(suAnkiNpcAdi);
-
-            if (GorevYoneticisi.Instance != null)
+            // ⚡ KORUMA KALKANI: Eğer ilk 3 kişiyle konuşma görevi bittiyse (gorevHazir true ise),
+            // bir daha NPC konuşmaları bittiğinde ilk görev kodlarını asla tetikleme!
+            if (!gorevHazir)
             {
-                GorevYoneticisi.Instance.NPCIleKonusmaBitti(suAnkiNpcAdi);
-            }
-            else
-            {
-                Debug.LogWarning("[UYARI] Sahnede 'GorevYoneticisi' bulunamadığı için görev tetiklenemedi!");
-            }
+                konusulanNpcListesi.Add(suAnkiNpcAdi);
 
-            GorevKontrolEt();
+                if (GorevYoneticisi.Instance != null)
+                {
+                    GorevYoneticisi.Instance.NPCIleKonusmaBitti(suAnkiNpcAdi);
+                }
+                else
+                {
+                    Debug.LogWarning("[UYARI] Sahnede 'GorevYoneticisi' bulunamadığı için görev tetiklenemedi!");
+                }
+
+                GorevKontrolEt();
+            }
         }
 
         hareket oyuncuHareketi = FindFirstObjectByType<hareket>();
@@ -237,6 +238,9 @@ public class DiyalogYoneticisi : MonoBehaviour
 
     void GorevKontrolEt()
     {
+        // ⚡ Ekstra Güvenlik: Görev zaten hazırsa burayı tamamen pas geç
+        if (gorevHazir) return;
+
         if (konusulanNpcListesi.Contains("Güvenlik Rıza") && 
             konusulanNpcListesi.Contains("Liman Müdürü Kemal") && 
             konusulanNpcListesi.Contains("İşçi Ahmet"))
@@ -264,4 +268,4 @@ public class DiyalogYoneticisi : MonoBehaviour
                 audioSource.PlayOneShot(Resources.Load<AudioClip>("Audio/Dialogs/Dedektif_IlkSorgu_Sonrasi"));
         }
     }
-}
+}   

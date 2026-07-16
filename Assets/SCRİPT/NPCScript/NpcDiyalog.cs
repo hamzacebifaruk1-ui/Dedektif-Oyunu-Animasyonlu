@@ -138,8 +138,8 @@ public class NpcDiyalog : MonoBehaviour
         else if (npcAdi == "Liman Müdürü Kemal")
         {
             // ⚡ HATA BURADAYDI: elevenLabsSecDosyaAdi -> elevenLabsSesDosyaAdi olarak düzeltildi!
-            ilkYalanlarDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif", textIcerik = "Kemal Bey, vincin çelik halatlarını bizzat inceledim. Sabotaj var...", elevenLabsSesDosyaAdi = "Dedektif_Soru_Kemal1" });
-            ilkYalanlarDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Liman Müdürü Kemal", textIcerik = "Ne sabotesi, ne cinayeti dedektif bey? Milyarlık liman projesi burası...", elevenLabsSesDosyaAdi = "Kemal_Yalan_Sirket" });
+            ilkYalanlarDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif", textIcerik = "Kemal Bey, Dün gece saaat 02:00'da genç bir işçi can verdi.", elevenLabsSesDosyaAdi = "Dedektif_Soru_Kemal1" });
+            ilkYalanlarDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Liman Müdürü Kemal", textIcerik = "Büyük bir tajedi Dedektif bey? Şieketin adını lekelmeyein...", elevenLabsSesDosyaAdi = "Kemal_Yalan_Sirket" });
 
             yuzlesmeSuclamaDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Dedektif", textIcerik = "Holdingin gücünün arkasına saklanmayı bırak! Yolsuzluk evrakları elimde!", elevenLabsSesDosyaAdi = "Dedektif_Evrak_Bulundu_IcSes" });
             yuzlesmeSuclamaDiyalogu.Add(new DiyalogSatiri { konusmaciAdi = "Liman Müdürü Kemal", textIcerik = "Tamam, evet! Malzemeden kıstım ama katil değilim! İşçi Ahmet'e bakın!", elevenLabsSesDosyaAdi = "Kemal_Itiraf_Final" });
