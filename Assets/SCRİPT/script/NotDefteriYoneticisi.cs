@@ -8,7 +8,7 @@ public class NotDefteriYoneticisi : MonoBehaviour
 {
     public static NotDefteriYoneticisi Instance;
 
-    [Header("UI Elemanlari")]
+    [Header("UI Elemanları")]
     public GameObject notDefteriPanel;
     public Transform icerikAlani; 
 
@@ -19,23 +19,22 @@ public class NotDefteriYoneticisi : MonoBehaviour
     private List<string> bulunanDeliller = new List<string>();
     private List<string> bulunanNotlar = new List<string>();
 
-    // Yeni Paket Hikayeye Göre Güncellenmiş Dedektif Notları
+    // 🔍 DELİLLERİN TAM LİSTESİ VE DEDEKTİF NOTLARI
     private Dictionary<string, string> delilNotlari = new Dictionary<string, string>()
     {
-        // --- GERÇEK DELİLLER ---
-        { "Yırtık Bakım Defteri", "Bakım kayıtları sahte. Biri bu defterin sayfalarını bilerek yırtmış." },
-        { "Kırık Vinç Teli", "Bu çelik tel yıpranmayla kopmaz. Ağzı spiral taşıyla kesilmiş gibi duruyor." },
-        { "Anonim Not", "Murat'ın baretine sıkıştırılan not: 'Konuşursan sonun limanın dibi olur' yazıyor." },
-        { "Güvenlik Kamera Kaydı", "Gece 02:00 kayıtları. Müdür Kemal'in elinde bir aletle vinç dairesine girdiğini gösteriyor." },
-        { "İlaç Kutusu", "Murat'ın kullandığı ağır göz ilacı. Gece vardiyasında çalışması yasal olarak imkansızdı." },
-
-        // --- SAHTE DELİLLER ---
-        { "Kırık Kahve Kupası", "Kupa yere düşüp kırılmış. İçinde sadece kahve kalıntıları var. Kazayla doğrudan bir bağı yok." },
-        { "Paslı Çelik Halat", "Tamamen paslanmış ve çürümüş bir halat. Bu parça aylardır burada paslanmaya bırakılmış." },
-        { "Eski Telsiz Bataryası", "Aşırı ısınmadan şişmiş bir batarya. Telsiz ağındaki arızayı açıklayabilir ama Murat'ın düşüşüyle alakası yok." },
-        { "Liman Giriş Kartı", "Başka bir liman işçisine ait kayıp kart. Kaza gecesinden üç gün önce kayıp ilanı verilmiş, sahte bir iz." },
-        { "Kirli İş Eldiveni", "Üzerinde standart motor yağı lekeleri olan bir eldiven. Herhangi bir parmak izi ya da boğuşma kanıtı taşımıyor." },
-        { "Araba Anahtarı", "Sıradan bir binek araç anahtarı. Şantiyedeki şirket araçlarından birine ait, cinayet planıyla alakası yok." }
+        // delilNotlari sözlüğünün içine eklenen yeni satırlar:
+        { "Murat'ın Gizli Mektubu", "Murat'ın ölmeden önce Ahmet'in dolabına bıraktığı mektup. Kemal Müdür ile kızı arasındaki ilişkiyi ve tehditleri kanıtlıyor." },
+        { "Zimmet Kayıt Belgesi", "Jeneratör odasında gizlenmiş evrak. Kemal Müdür'ün sahte faturalarla bütçeyi boşalttığını kesinleştiriyor." },
+        { "Şirket Evrakları", "Liman Müdürü Kemal'in şirket bütçesinden çaldığını, kalitesiz ekipman alımı yaptığını ve mali yolsuzluklarını kanıtlayan naylon faturalar." },
+        { "Yırtık Bakım Defteri", "Bakım kayıtları sahte. Biri vinç bakımının yapıldığını gizlemek için sayfaları bilerek yırtmış." },
+        { "USB Bellek", "Güvenlik kulübesinden alındı. Güvenlik Rıza'nın 'elektrikler kesildi' yalanını çürüten sistem loglarını içeriyor." },
+        { "Yırtık Kadın Fotoğrafı", "Murat'ın, Kemal Müdür'ün kızıyla çekilmiş fotoğrafı. Cinayetin arkasındaki kişisel motifi ve şantajı kanıtlıyor." },
+        { "Boş İlaç Şişesi", "Murat'a intihar süsü vermek için olay yerine bırakılmış sahte sakinleştirici şişesi." },
+        { "Çamurlu Lastik İzi", "Olay gecesi şantiyeye giren lüks araca ait izler. Kemal Müdür'ün özel aracıyla birebir uyuşuyor." },
+        { "Spiral Taşlama Makinesi", "Korkuluk demirlerini ve vinç vidalarını kasıtlı olarak zayıflatmak/kesmek için kullanılmış alet." },
+        { "Kırık Vinç Teli", "Vinç telinin doğal aşınmayla değil, spiral taşlama aletiyle kesilerek zayıflatıldığını gösteren halat parçası." },
+        { "Kirlenmiş Baret", "Olay yerinin uzağında bulunmuş, dedektifi şaşırtmak ve vakit kaybettirmek için bırakılmış sahte iz." }
+        
     };
 
     void Awake()
@@ -75,43 +74,53 @@ public class NotDefteriYoneticisi : MonoBehaviour
         }
     }
 
-    // --- AKILLI VE ESNEK DELİL EKLEME FONKSİYONU ---
+    // Metin karşılaştırma hatalarını yok eden arama fonksiyonu
+    private string MetniTemizle(string input)
+    {
+        if (string.IsNullOrEmpty(input)) return "";
+        return input.ToLower()
+                    .Replace("_", "")
+                    .Replace(" ", "")
+                    .Replace("ı", "i")
+                    .Replace("ğ", "g")
+                    .Replace("ü", "u")
+                    .Replace("ş", "s")
+                    .Replace("ö", "o")
+                    .Replace("ç", "c");
+    }
+
     public void DelilEkle(string delilAdi)
     {
         if (!bulunanDeliller.Contains(delilAdi))
         {
             bulunanDeliller.Add(delilAdi);
             
-            // Varsayılan olarak İnceleniyor yapıyoruz
             string bulunanNotText = "İnceleniyor...";
-            string gelenIsimTemiz = delilAdi.ToLower().Trim();
+            string gelenTemiz = MetniTemizle(delilAdi);
 
-            // Sözlükteki tüm anahtarları tek tek kontrol et (İlaç yazılsa bile İlaç Kutusu'nu bulur)
-            foreach (var anahtar in delilNotlari.Keys)
+            foreach (var kvp in delilNotlari)
             {
-                string anahtarTemiz = anahtar.ToLower();
-                if (anahtarTemiz.Contains(gelenIsimTemiz) || gelenIsimTemiz.Contains(anahtarTemiz))
+                string anahtarTemiz = MetniTemizle(kvp.Key);
+                if (gelenTemiz.Contains(anahtarTemiz) || anahtarTemiz.Contains(gelenTemiz))
                 {
-                    bulunanNotText = delilNotlari[anahtar];
+                    bulunanNotText = kvp.Value;
                     break;
                 }
             }
 
             bulunanNotlar.Add(bulunanNotText);
-
             if (acik) DefterGuncelle();
         }
     }
 
-    // Harici scriptlerden açıklamaları çekebilmek için esnek yardımcı fonksiyon
     public string NotuGetir(string delilAdi)
     {
-        string gelenIsimTemiz = delilAdi.ToLower().Trim();
-        foreach (var anahtar in delilNotlari.Keys)
+        string gelenTemiz = MetniTemizle(delilAdi);
+        foreach (var kvp in delilNotlari)
         {
-            string anahtarTemiz = anahtar.ToLower();
-            if (anahtarTemiz.Contains(gelenIsimTemiz) || gelenIsimTemiz.Contains(anahtarTemiz)) 
-                return delilNotlari[anahtar];
+            string anahtarTemiz = MetniTemizle(kvp.Key);
+            if (gelenTemiz.Contains(anahtarTemiz) || anahtarTemiz.Contains(gelenTemiz)) 
+                return kvp.Value;
         }
         return "Açıklama bulunamadı.";
     }
@@ -181,8 +190,6 @@ public class NotDefteriYoneticisi : MonoBehaviour
         adText.fontSize = 22;
         adText.fontStyle = FontStyles.Bold;
         adText.color = new Color(1f, 0.55f, 0f);
-        adText.textWrappingMode = TextWrappingModes.Normal;
-        adText.overflowMode = TextOverflowModes.Ellipsis;
 
         GameObject notObj = new GameObject("Not");
         notObj.transform.SetParent(kart.transform, false);
@@ -196,6 +203,5 @@ public class NotDefteriYoneticisi : MonoBehaviour
         notText.text = "▸ " + bulunanNotlar[index];
         notText.fontSize = 18;
         notText.color = new Color(0.85f, 0.85f, 0.85f);
-        notText.textWrappingMode = TextWrappingModes.Normal;
     }
 }

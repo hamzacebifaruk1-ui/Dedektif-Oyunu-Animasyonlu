@@ -13,36 +13,38 @@ public class AhmetSecimKontrol : MonoBehaviour
 
     private void Start()
     {
-        // 🟢 Şirket Yolsuzluğu İtirafı
+        // 🟢 SEÇENEK 1: Üstüne Git / Baskı Yap (Atölyeyi İpucu Verir)
+        // Ses Dosyası Klasörü: Resources/Dialogs/Ahmet_Yuzlesme_Baski.mp3
         yolsuzlukItirafi.Clear();
         yolsuzlukItirafi.Add(new DiyalogSatiri { 
             konusmaciAdi = "İşçi Ahmet", 
-            textIcerik = "Amirim... Evet, Kemal Müdür Murat'ı susturmak için teknik ekibe sabotaj emri verdi. Murat her şeyi holdinge bildirecekti!", 
-            elevenLabsSesDosyaAdi = "Ahmet_Itiraf_Yolsuzluk" 
+            textIcerik = "Vallahi ben yapmadım amirim! O gece atölyeden spiral taşlama sesleri geliyordu, korkup kulübeye saklandım. Atölyeye git bak, ne arıyorsan orada!", 
+            elevenLabsSesDosyaAdi = "Ahmet_Yuzlesme_Baski" 
         });
 
-        // 🔴 Kişisel Husumet İtirafı
+        // 🔴 SEÇENEK 2: Sakin Ol / Güven Ver (Vinç Telini İpucu Verir)
+        // Ses Dosyası Klasörü: Resources/Dialogs/Ahmet_Yuzlesme_Sakin.mp3
         husumetItirafi.Clear();
         husumetItirafi.Add(new DiyalogSatiri { 
             konusmaciAdi = "İşçi Ahmet", 
-            textIcerik = "Şaşırdım amirim... O fotoğraf Murat'ın gizli ilişkisine ait. Müdürün ailesiyle tehdit ediliyordu, bu iş tamamen kişisel bir intikam!", 
-            elevenLabsSesDosyaAdi = "Ahmet_Itiraf_Husumet" 
+            textIcerik = "Murat iyi çocuktu abi... Olaydan birkaç saat önce vinç dairesinin orada birilerinin gizlice bir şeyler kestiğini duydum. Atölyedeki takımlara ve vinç tellerine bakarsanız ne demek istediğimi anlarsınız...", 
+            elevenLabsSesDosyaAdi = "Ahmet_Yuzlesme_Sakin" 
         });
     }
 
-    // 🟢 SEÇENEK 1: Şirket Yolsuzluğu Butonu (Üstteki Yeşil Buton)
+    // 🟢 SEÇENEK 1 BUTONU (Sert / Baskı Yap)
     public void SirketYolsuzluguSecenegi()
     {
-        Debug.Log("[SEÇİM] Şirket Yolsuzluğu rotası kilitlendi!");
+        Debug.Log("[SEÇİM] Ahmet'e baskı yapıldı, atölye ipucu alındı.");
         aktifRota = OyunRotasi.SirketYolsuzluk;
 
         KapatVeDiyalogBaslat(yolsuzlukItirafi);
     }
 
-    // 🔴 SEÇENEK 2: Kişisel Husumet Butonu (Alttaki Kırmızı Buton)
+    // 🔴 SEÇENEK 2 BUTONU (Sakin / Güven Ver)
     public void KisiselHusumetSecenegi()
     {
-        Debug.Log("[SEÇİM] Kişisel Husumet rotası kilitlendi!");
+        Debug.Log("[SEÇİM] Ahmet'e güven verildi, vinç teli ipucu alındı.");
         aktifRota = OyunRotasi.KisiselHusumet;
 
         KapatVeDiyalogBaslat(husumetItirafi);
@@ -52,17 +54,17 @@ public class AhmetSecimKontrol : MonoBehaviour
     {
         gameObject.SetActive(false); // Seçim panelini kapat
 
-        // Fareyi tekrar gizle
+        // Fareyi oyuna tekrar kilitler
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        // Ahmet'in seçilen rotaya göre itiraf etmesini sağla
+        // Ahmet'in yeni dolaylı ses kaydı çalışır
         if (DiyalogYoneticisi.Instance != null)
         {
             DiyalogYoneticisi.Instance.DiyalogBaslat(secilenDiyalog, "İşçi Ahmet");
         }
 
-        // Görev aşamasını "Kalan Delilleri Topla" olarak güncelle
+        // Görevi "Kalan Delilleri Topla" aşamasına aktarır
         if (GorevYoneticisi.Instance != null)
         {
             GorevYoneticisi.Instance.AsamaAtla(GorevYoneticisi.GorevAsamasi.KalanDelilleriTopla);

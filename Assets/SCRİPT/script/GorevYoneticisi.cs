@@ -193,8 +193,8 @@ public class GorevYoneticisi : MonoBehaviour
                 break;
 
             case GorevAsamasi.KalanDelilleriTopla:
-                guncelMetin = $"<color=purple>GÖREV: Şantiyede kalan mekanik ve çevre delillerini topla ({toplananSonAramaDelilleri}/3).</color>"; 
-                guncelIpucu = "Düşünce: Ahmet'in itiraflarından sonra atölyedeki spiral makinesini, kesik teli ve bareti bulmalıyım."; 
+                guncelMetin = $"<color=purple>GÖREV: Şantiyedeki gizli delili ara ve bul.</color>"; 
+                guncelIpucu = "Düşünce: Ahmet'in itirafından sonra söylediği yere gidip gizli delili bulmalıyım."; 
                 break;
 
             case GorevAsamasi.DelilTasnifPanosu:
@@ -241,7 +241,7 @@ public class GorevYoneticisi : MonoBehaviour
         }
     }
 
-    public void DelilToplandi(string delilAdi)
+public void DelilToplandi(string delilAdi)
     {
         ReferanslariBul();
 
@@ -286,14 +286,18 @@ public class GorevYoneticisi : MonoBehaviour
         }
         else if (mevcutAsama == GorevAsamasi.KalanDelilleriTopla) 
         {
-            if (delilAdi == "Spiral Taşlama Makinesi" || delilAdi == "Kırık Vinç Teli" || delilAdi == "Kirlenmiş Baret") 
+            // 🎯 GİZLİ DELİL + 3 MEKANİK DELİL SAYACI (TOPLAM 4 DELİL)
+            if (delilAdi == "Spiral Taşlama Makinesi" || delilAdi == "Kırık Vinç Teli" || 
+                delilAdi == "Kirlenmiş Baret" || delilAdi == "Murat'ın Gizli Mektubu" || 
+                delilAdi == "Zimmet Kayıt Belgesi") 
             {
                 toplananSonAramaDelilleri++; 
                 if (gorevText != null) 
-                    gorevText.text = $"<color=purple>GÖREV: Kalan mekanik delilleri topla ({toplananSonAramaDelilleri}/3).</color>"; 
+                    gorevText.text = $"<color=purple>GÖREV: Şantiyedeki kalan delilleri topla ({toplananSonAramaDelilleri}/4).</color>"; 
                 SyncDiyalogYazisi();
 
-                if (toplananSonAramaDelilleri >= 3) 
+                // Ancak 4 delilin hepsi toplandığında Delil Tasnif Panosuna geçer!
+                if (toplananSonAramaDelilleri >= 4) 
                 {
                     StartCoroutine(SesOynatVeAsamaGec("Dedektif_Pano_Hazir_IcSes", GorevAsamasi.DelilTasnifPanosu)); 
                 }
@@ -387,10 +391,23 @@ public class GorevYoneticisi : MonoBehaviour
         SceneManager.LoadScene("AnaMenuSahnendekiAd"); 
     }
 
-    // ⚡ YENİ EKLENEN KÖPRÜ FONKSİYONU
-    // DelilPanosuSistemi'nin toplanan delillere ulaşabilmesi için bu fonksiyon şart!
     public HashSet<string> GetToplananDeliller()
     {
         return toplananDelillerSeti;
+    }
+
+    // 🎯 EKLENEN KÖPRÜ METOTLAR:
+    public void MevcutAsamayiGuncelle(GorevAsamasi yeniAsama)
+    {
+        AsamaAtla(yeniAsama);
+    }
+
+    public void GorevYazisiGuncelle(string yeniYazi)
+    {
+        if (gorevText != null) 
+        {
+            gorevText.text = yeniYazi;
+            SyncDiyalogYazisi();
+        }
     }
 }

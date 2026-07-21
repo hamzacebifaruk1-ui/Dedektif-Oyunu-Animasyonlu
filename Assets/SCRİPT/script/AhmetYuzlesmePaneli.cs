@@ -1,45 +1,94 @@
 using UnityEngine;
-using UnityEngine.UI;
+using System.Collections;
 
 public class AhmetYuzlesmePaneli : MonoBehaviour
 {
-    [Header("Seçim Butonları")]
-    public Button inanButonu;
-    public Button tehditEtButonu;
+    [Header("UI & Obje Referansları")]
+    public GameObject yuzlesmePaneli;
+    public GameObject dolaptakiMektupObjesi;
+    public GameObject jeneratordekiBelgeObjesi;
 
-    void Start()
+    // Inspector'da Üst Buton (Fotoğraf) OnClick olayına bu fonksiyonu bağla:
+    public void FotografSecildi()
     {
-        // Butonlara tıklama olaylarını bağlıyoruz
-        if (inanButonu != null)
-            inanButonu.onClick.AddListener(() => KararVer(1));
-
-        if (tehditEtButonu != null)
-            tehditEtButonu.onClick.AddListener(() => KararVer(2));
+        KararVer(1);
     }
 
-    public void KararVer(int secimYolu)
+    // Inspector'da Alt Buton (Zimmet) OnClick olayına bu fonksiyonu bağla:
+    public void ZimmetSecildi()
     {
-        if (secimYolu == 1)
-        {
-            Debug.Log("[HİKAYE] Dedektif Ahmet'e inanmayı seçti.");
-            // İleride buraya inanma yoluyla ilgili özel diyalog veya ses ekleyebilirsin
-        }
-        else
-        {
-            Debug.Log("[HİKAYE] Dedektif Ahmet'i tehdit ederek konuşturmayı seçti.");
-        }
+        KararVer(2);
+    }
 
-        // 1. Paneli kapat
-        gameObject.SetActive(false);
+    public void KararVer(int secimNo)
+    {
+        if (yuzlesmePaneli != null) 
+            yuzlesmePaneli.SetActive(false);
 
-        // 2. Fareyi tekrar oyuna kilitle
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        // 3. Görev yöneticisini "Kalan Delilleri Toplama" aşamasına geçir!
+        if (secimNo == 1) // 🔴 Fotoğraf / Aşk Yolu
+        {
+            Debug.Log("[HİKAYE] Yırtık Fotoğraf Rotaları Seçildi.");
+            if (dolaptakiMektupObjesi != null) dolaptakiMektupObjesi.SetActive(true);
+            if (jeneratordekiBelgeObjesi != null) jeneratordekiBelgeObjesi.SetActive(false);
+
+            if (GorevYoneticisi.Instance != null)
+            {
+                GorevYoneticisi.Instance.StartCoroutine(SesleriOynat("Dedektif_Ahmet_Fotograf", "Ahmet_Dolap_Mektup"));
+            }
+        }
+        else if (secimNo == 2) // 🟡 Zimmet / Paralar Yolu
+        {
+            Debug.Log("[HİKAYE] Zimmet Belgeleri Rotaları Seçildi.");
+            if (jeneratordekiBelgeObjesi != null) jeneratordekiBelgeObjesi.SetActive(true);
+            if (dolaptakiMektupObjesi != null) dolaptakiMektupObjesi.SetActive(false);
+
+            if (GorevYoneticisi.Instance != null)
+            {
+                GorevYoneticisi.Instance.StartCoroutine(SesleriOynat("Dedektif_Ahmet_Zimmet", "Ahmet_Jenerator_Belge"));
+            }
+        }
+    }
+
+    private IEnumerator SesleriOynat(string dedektifSes, string ahmetSes)
+    {
+        AudioSource sesKaynagi = (GorevYoneticisi.Instance != null) ? GorevYoneticisi.Instance.icSesKaynagi : null;
+
+        // 1. Dedektif Ses Dosyası
+        AudioClip clip1 = Resources.Load<AudioClip>("Audio/Dialogs/" + dedektifSes);
+        if (clip1 != null && sesKaynagi != null)
+        {
+            sesKaynagi.clip = clip1;
+            sesKaynagi.Play();
+            yield return new WaitForSecondsRealtime(clip1.length + 0.3f);
+        }
+        else
+        {
+            Debug.LogWarning($"[SES BULUNAMADI] Resources/Audio/Dialogs/{dedektifSes} yolu kontrol edilmeli!");
+            yield return new WaitForSecondsRealtime(1.5f);
+        }
+
+        // 2. Ahmet Ses Dosyası
+        AudioClip clip2 = Resources.Load<AudioClip>("Audio/Dialogs/" + ahmetSes);
+        if (clip2 != null && sesKaynagi != null)
+        {
+            sesKaynagi.clip = clip2;
+            sesKaynagi.Play();
+            yield return new WaitForSecondsRealtime(clip2.length + 0.3f);
+        }
+        else
+        {
+            Debug.LogWarning($"[SES BULUNAMADI] Resources/Audio/Dialogs/{ahmetSes} yolu kontrol edilmeli!");
+            yield return new WaitForSecondsRealtime(1.5f);
+        }
+
+        // 3. Görev Aşaması ve Metin Güncellemesi
         if (GorevYoneticisi.Instance != null)
         {
             GorevYoneticisi.Instance.AsamaAtla(GorevYoneticisi.GorevAsamasi.KalanDelilleriTopla);
+            GorevYoneticisi.Instance.GorevYazisiGuncelle("<color=purple>GÖREV: Şantiyedeki gizli ipucunu ve kalan delilleri topla (0/4)</color>");
         }
     }
 }

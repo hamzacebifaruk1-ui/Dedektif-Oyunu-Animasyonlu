@@ -30,7 +30,6 @@ public class DelilNesnesi : MonoBehaviour
         // >>> %100 GARANTİLİ KONTROL KATMANI <<<
         if (DiyalogYoneticisi.Instance != null && DiyalogYoneticisi.Instance.delilYazisiText != null)
         {
-            // Eğer ekrandaki delil sayacı UI nesnesi aktif değilse (konuşmalar bitmediyse) toplamayı engelle
             if (!DiyalogYoneticisi.Instance.delilYazisiText.gameObject.activeInHierarchy)
             {
                 return false; 
@@ -63,40 +62,41 @@ public class DelilNesnesi : MonoBehaviour
             Destroy(sesObjesi, toplamaSesi.length);
         }
 
-        // 2. 3D İnceleme Ekranını Aç (Eğer sistem sahnede varsa)
+        // 2. 3D İnceleme Ekranını Aç
         if (DelilIncelemeSistemi.Instance != null)
         {
             DelilIncelemeSistemi.Instance.IncelemeyiBaslat(delilPrefab, delilAdi, incelemeBoyutu, incelemeMesafesi);
         }
 
         // ===================================================
-        // 🚨 YENİ: SİSTEMLER ARASI İLETİŞİM KÖPRÜSÜ 🚨
+        // 🚨 SİSTEMLER ARASI İLETİŞİM KÖPRÜSÜ 🚨
         // ===================================================
         
-        // Delil yöneticisine bu delilin bulunduğunu haber ver 
-        // (Bu sayede sayaç artar, açıklama yazılır ve dedektif iç sesi oynatılır)
+        // A) NOT DEFTERİNE EKLE (Artık doğrudan deftere ekleniyor!)
+        if (NotDefteriYoneticisi.Instance != null)
+        {
+            NotDefteriYoneticisi.Instance.DelilEkle(delilAdi);
+        }
+        else
+        {
+            Debug.LogWarning("[UYARI] Sahnede NotDefteriYoneticisi bulunamadı!");
+        }
+
+        // B) Delil yöneticisine haber ver
         if (DelilYoneticisi.Instance != null)
         {
             DelilYoneticisi.Instance.DelilBulundu(delilAdi);
         }
-        else
-        {
-            Debug.LogWarning("[UYARI] Sahnede DelilYoneticisi bulunamadığı için delil işlenemedi!");
-        }
 
-        // Görev yöneticisine haber ver (Arama aşamalarında hedefleri günceller ve aşama atlatır)
+        // C) Görev yöneticisine haber ver
         if (GorevYoneticisi.Instance != null)
         {
             GorevYoneticisi.Instance.DelilToplandi(delilAdi);
         }
-        else
-        {
-            Debug.LogWarning("[UYARI] Sahnede GorevYoneticisi bulunamadığı için görev ilerletilemedi!");
-        }
         
         // ===================================================
 
-        // Görsel ve fiziksel olarak sahnedeki nesneyi kapat (İnceleme bitene kadar yok etmiyoruz)
+        // Görsel ve fiziksel olarak sahnedeki nesneyi kapat
         if (GetComponent<MeshRenderer>() != null) GetComponent<MeshRenderer>().enabled = false;
         foreach (var childRenderer in GetComponentsInChildren<Renderer>()) childRenderer.enabled = false;
         if (GetComponent<Collider>() != null) GetComponent<Collider>().enabled = false;
