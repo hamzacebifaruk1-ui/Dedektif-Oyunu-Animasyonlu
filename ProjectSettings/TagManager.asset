@@ -3,7 +3,15 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - door
+  - button f4
+  - button f5
+  - button f3
+  - button f2
+  - button f1
+  - button f6
+  - Kapi
   layers:
   - Default
   - TransparentFX
@@ -12,8 +20,8 @@ TagManager:
   - Water
   - UI
   - Engeller
-  - 
-  - 
+  - Kapi
+  - Player
   - 
   - 
   - 

@@ -102,13 +102,35 @@ public class FinalSuclamaSistemi : MonoBehaviour
 
     public void AnaMenuyeDon()
     {
-        // Ana Menü sahnenizin adı "AnaMenu" ise buraya yazın
+        // Hafızadaki eski Manager objelerini temizle
+        if (GorevYoneticisi.Instance != null) Destroy(GorevYoneticisi.Instance.gameObject);
+        
         SceneManager.LoadScene("AnaMenu"); 
     }
 
     public void OyunuYenidenBaslat()
     {
-        // Mevcut sahneyi baştan yükler
+        // 1. Arka planda takılı kalan GorevYoneticisi'ni yok et (Çok Kritik!)
+        if (GorevYoneticisi.Instance != null)
+        {
+            GorevYoneticisi.Instance.StopAllCoroutines();
+            Destroy(GorevYoneticisi.Instance.gameObject);
+        }
+
+        // 2. Delil Sayacını ve durumunu sıfırla
+        if (DelilYoneticisi.Instance != null)
+        {
+            DelilYoneticisi.Instance.DelilSayaciniSifirla();
+        }
+
+        // 3. Panelleri kapat ve imleci oyun moduna kilitip gizle
+        if (tekrarDenePaneli != null) tekrarDenePaneli.SetActive(false);
+        if (tebriklerPaneli != null) tebriklerPaneli.SetActive(false);
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        // 4. Sahneyi tertemiz sıfırdan yükle
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

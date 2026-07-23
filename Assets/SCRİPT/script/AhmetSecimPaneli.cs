@@ -8,21 +8,44 @@ public class AhmetSecimPaneli : MonoBehaviour
     public GameObject dolaptakiMektupObjesi;
     public GameObject jeneratordekiBelgeObjesi;
 
+    private void Awake()
+    {
+        // Oyun başında iki gizli delili de deaktif yap
+        GizliDelilleriGizle();
+    }
+
     void Start()
     {
-        // Oyun ilk açıldığında her iki gizli delili de zorla KAPA!
+        GizliDelilleriGizle();
+    }
+
+    private void GizliDelilleriGizle()
+    {
         if (dolaptakiMektupObjesi != null) dolaptakiMektupObjesi.SetActive(false);
         if (jeneratordekiBelgeObjesi != null) jeneratordekiBelgeObjesi.SetActive(false);
     }
 
-    // 🔴 ÜST BUTON (Fotoğraf / Mektup)
+    // 🔴 ÜST BUTON (Fotoğraf / Mektup Seçildi)
     public void Secenek1_FotografSecildi()
     {
-        Debug.Log("🟢 [BUTON 1] Yırtık Fotoğraf Seçildi.");
+        Debug.Log("🟢 [SEÇİM 1] Mektup Seçildi. Zimmet Belgesi tamamen yok ediliyor!");
 
+        // 1. Sadece Mektup aktif olur
         if (dolaptakiMektupObjesi != null) dolaptakiMektupObjesi.SetActive(true);
-        if (jeneratordekiBelgeObjesi != null) jeneratordekiBelgeObjesi.SetActive(false);
 
+        // 2. Zimmet Belgesi sahneden TAMAMEN SİLİNİR (Toplanamaz)
+        if (jeneratordekiBelgeObjesi != null) 
+        {
+            Destroy(jeneratordekiBelgeObjesi);
+        }
+
+        // 3. Rota Belirle
+        if (DelilYoneticisi.Instance != null)
+        {
+            DelilYoneticisi.Instance.RotaBelirle(DelilYoneticisi.OyunRotasi.KisiselHusumet);
+        }
+
+        // 4. Ses ve Diyalog
         if (GorevYoneticisi.Instance != null)
         {
             GorevYoneticisi.Instance.StartCoroutine(DiyalogVeSesOynat("Dedektif_Ahmet_Fotograf", "Ahmet_Dolap_Mektup"));
@@ -31,14 +54,27 @@ public class AhmetSecimPaneli : MonoBehaviour
         PaneliKapat();
     }
 
-    // 🟡 ALT BUTON (Zimmet / Paralar)
+    // 🟡 ALT BUTON (Zimmet / Paralar Seçildi)
     public void Secenek2_ZimmetSecildi()
     {
-        Debug.Log("🟡 [BUTON 2] Zimmet Belgeleri Seçildi.");
+        Debug.Log("🟡 [SEÇİM 2] Zimmet Belgesi Seçildi. Mektup tamamen yok ediliyor!");
 
+        // 1. Sadece Zimmet Belgesi aktif olur
         if (jeneratordekiBelgeObjesi != null) jeneratordekiBelgeObjesi.SetActive(true);
-        if (dolaptakiMektupObjesi != null) dolaptakiMektupObjesi.SetActive(false);
 
+        // 2. Mektup Objesi sahneden TAMAMEN SİLİNİR (Toplanamaz)
+        if (dolaptakiMektupObjesi != null) 
+        {
+            Destroy(dolaptakiMektupObjesi);
+        }
+
+        // 3. Rota Belirle
+        if (DelilYoneticisi.Instance != null)
+        {
+            DelilYoneticisi.Instance.RotaBelirle(DelilYoneticisi.OyunRotasi.SirketYolsuzlugu);
+        }
+
+        // 4. Ses ve Diyalog
         if (GorevYoneticisi.Instance != null)
         {
             GorevYoneticisi.Instance.StartCoroutine(DiyalogVeSesOynat("Dedektif_Ahmet_Zimmet", "Ahmet_Jenerator_Belge"));
@@ -58,7 +94,6 @@ public class AhmetSecimPaneli : MonoBehaviour
     {
         AudioSource sesKaynagi = (GorevYoneticisi.Instance != null) ? GorevYoneticisi.Instance.icSesKaynagi : null;
 
-        // 1. Dedektif Ses Kontrolü
         AudioClip dedektifClip = Resources.Load<AudioClip>("Audio/Dialogs/" + dedektifSesAdi);
         if (dedektifClip != null && sesKaynagi != null)
         {
@@ -68,11 +103,9 @@ public class AhmetSecimPaneli : MonoBehaviour
         }
         else
         {
-            Debug.LogError($"❌ [SES EKSİK] Resources/Audio/Dialogs/{dedektifSesAdi} dosyası bulunamadı!");
             yield return new WaitForSecondsRealtime(1.5f);
         }
 
-        // 2. Ahmet Ses Kontrolü
         AudioClip ahmetClip = Resources.Load<AudioClip>("Audio/Dialogs/" + ahmetSesAdi);
         if (ahmetClip != null && sesKaynagi != null)
         {
@@ -82,7 +115,6 @@ public class AhmetSecimPaneli : MonoBehaviour
         }
         else
         {
-            Debug.LogError($"❌ [SES EKSİK] Resources/Audio/Dialogs/{ahmetSesAdi} dosyası bulunamadı!");
             yield return new WaitForSecondsRealtime(1.5f);
         }
 

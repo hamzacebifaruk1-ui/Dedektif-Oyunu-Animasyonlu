@@ -27,6 +27,24 @@ public class DelilNesnesi : MonoBehaviour
     {
         if (toplandiMi) return false;
 
+        // >>> 🛑 ROTA KONTROL KİLİDİ (Seçilmeyen Delil Kesinlikle Toplanamaz) <<<
+        if (DelilYoneticisi.Instance != null)
+        {
+            var aktifRota = DelilYoneticisi.Instance.aktifRota;
+
+            // Şirket Yolsuzluğu seçildiyse Mektup TOPLANAMAZ
+            if (delilAdi == "Murat'ın Gizli Mektubu" && aktifRota == DelilYoneticisi.OyunRotasi.SirketYolsuzlugu)
+            {
+                return false;
+            }
+
+            // Kişisel Husumet seçildiyse Zimmet Belgesi TOPLANAMAZ
+            if (delilAdi == "Zimmet Kayıt Belgesi" && aktifRota == DelilYoneticisi.OyunRotasi.KisiselHusumet)
+            {
+                return false;
+            }
+        }
+
         // >>> %100 GARANTİLİ KONTROL KATMANI <<<
         if (DiyalogYoneticisi.Instance != null && DiyalogYoneticisi.Instance.delilYazisiText != null)
         {
@@ -72,14 +90,10 @@ public class DelilNesnesi : MonoBehaviour
         // 🚨 SİSTEMLER ARASI İLETİŞİM KÖPRÜSÜ 🚨
         // ===================================================
         
-        // A) NOT DEFTERİNE EKLE (Artık doğrudan deftere ekleniyor!)
+        // A) NOT DEFTERİNE EKLE
         if (NotDefteriYoneticisi.Instance != null)
         {
             NotDefteriYoneticisi.Instance.DelilEkle(delilAdi);
-        }
-        else
-        {
-            Debug.LogWarning("[UYARI] Sahnede NotDefteriYoneticisi bulunamadı!");
         }
 
         // B) Delil yöneticisine haber ver
@@ -93,8 +107,6 @@ public class DelilNesnesi : MonoBehaviour
         {
             GorevYoneticisi.Instance.DelilToplandi(delilAdi);
         }
-        
-        // ===================================================
 
         // Görsel ve fiziksel olarak sahnedeki nesneyi kapat
         if (GetComponent<MeshRenderer>() != null) GetComponent<MeshRenderer>().enabled = false;

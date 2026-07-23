@@ -7,10 +7,15 @@ public class OrtamSesleri : MonoBehaviour
     public AudioClip ruzgar;
     public AudioClip denizDalgasi;
 
+    [Header("Arka Plan Müziği")]
+    public AudioClip gerilimMuzigi; // Dedektiflik gerilim müziği buraya eklenecek
+    [Range(0f, 1f)] public float muziKSesSeviyesi = 0.25f; // Müzik seviyesini Inspector'dan kolayca ayarla
+
     [Header("Ses Kaynakları")]
     private AudioSource limanSource;
     private AudioSource ruzgarSource;
     private AudioSource denizSource;
+    private AudioSource muziKSource;
 
     void Start()
     {
@@ -22,8 +27,10 @@ public class OrtamSesleri : MonoBehaviour
         ruzgarSource = OlusturAudioSource(ruzgar, 0.20f, false);
 
         // Deniz dalgası 3D olduğu ve yaklaştıkça duyulacağı için biraz daha güçlü yaptık (0.2f -> 0.55f)
-        // Eğer denize çok yakınken kulak tırmalıyorsa bu değeri 0.4f civarına çekebilirsin.
         denizSource = OlusturAudioSource(denizDalgasi, 0.55f, true);
+
+        // Gerilim Müziği (2D olarak sürekli döngüde çalacak):
+        muziKSource = OlusturAudioSource(gerilimMuzigi, muziKSesSeviyesi, false);
     }
 
     AudioSource OlusturAudioSource(AudioClip clip, float volume, bool is3D)

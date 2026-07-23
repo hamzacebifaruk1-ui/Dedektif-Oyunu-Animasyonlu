@@ -7,14 +7,13 @@ public class DelilYoneticisi : MonoBehaviour
 {
     public static DelilYoneticisi Instance;
 
-    // --- YENİ SEÇİM SİSTEMİ ENTEGRASYONU ---
     public enum OyunRotasi { Secilmedi, SirketYolsuzlugu, KisiselHusumet }
     
     [Header("Aktif Hikaye Rotası")]
     public OyunRotasi aktifRota = OyunRotasi.Secilmedi;
 
     [Header("Delil Ayarları")]
-    public int toplamDelilSayisi = 8; // Sahnedeki toplam 8 delil
+    public int toplamDelilSayisi = 9; // Toplam delil sayısı 9 olarak sabitlendi
     private int bulunanDelilSayisi = 0;
 
     [Header("UI Elemanları")]
@@ -30,19 +29,48 @@ public class DelilYoneticisi : MonoBehaviour
     [Header("Ses Sistemi Entegrasyonu")]
     public AudioSource dedektifSesKaynagi;
 
+    private Coroutine bildirimCoroutine;
+
     void Awake()
     {
-        Instance = this; 
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Start()
     {
+        ReferanslariBul();
         if (gorevTamamPanel != null) gorevTamamPanel.SetActive(false); 
         if (bildirimPanel != null) bildirimPanel.SetActive(false); 
         DelilSayaciniGuncelle(); 
     }
 
-    // Ahmet'le konuşulduğunda seçilen rotayı buraya kaydetmek için kullanılacak
+    public void ReferanslariBul()
+    {
+        if (delilSayaciText == null)
+        {
+            GameObject txtObj = GameObject.Find("DelilYazisi");
+            if (txtObj != null) delilSayaciText = txtObj.GetComponent<TextMeshProUGUI>();
+        }
+
+        if (bildirimPanel == null) bildirimPanel = GameObject.Find("BildirimPaneli");
+
+        if (dedektifSesKaynagi == null)
+        {
+            dedektifSesKaynagi = GetComponent<AudioSource>();
+            if (dedektifSesKaynagi == null)
+            {
+                dedektifSesKaynagi = gameObject.AddComponent<AudioSource>();
+            }
+        }
+    }
+
     public void RotaBelirle(OyunRotasi yeniRota)
     {
         aktifRota = yeniRota;
@@ -51,73 +79,59 @@ public class DelilYoneticisi : MonoBehaviour
 
     public string DelilNotunuGetir(string delilAdi, out string sesDosyaAdi, out bool gercekMi)
     {
-        gercekMi = false; // Varsayılan olarak sahte kabul edilsin
+        gercekMi = false; 
 
         switch (delilAdi)
         {
-            // ==========================================
-            // 1) USB BELLEĞİ (Her iki rotada da GERÇEK)
-            // ==========================================
             case "USB Bellek":
                 sesDosyaAdi = "Dedektif_Delil_USB";
                 gercekMi = true;
                 return "Güvenlik Rıza'nın elektrik kesildi yalanını çürüten orijinal kayıtlar. Murat'ın vince çıkarken arkasından birinin tırmandığını gösteriyor.";
 
-            // ==========================================
-            // 2) ŞİRKET EVRAKLARI (Yolsuzlukta GERÇEK, Husumette SAHTE)
-            // ==========================================
             case "Şirket Evrakları":
                 sesDosyaAdi = "Dedektif_Evrak_Bulundu_IcSes";
                 gercekMi = (aktifRota == OyunRotasi.SirketYolsuzlugu);
                 return "Bu evraklar... Şantiyeden çalınan paraları ve sahte faturaları gösteriyor. Murat bunu fark etmiş ve müdürü tehdit etmiş olmalı!";
 
-            // ==========================================
-            // 3) YIRTIDIK KADIN FOTOĞRAFI (Husumette GERÇEK, Yolsuzlukta SAHTE)
-            // ==========================================
             case "Yırtık Kadın Fotoğrafı":
                 sesDosyaAdi = "Dedektif_Delil_Mektup";
                 gercekMi = (aktifRota == OyunRotasi.KisiselHusumet);
                 return "Murat'ın müdürün kızıyla gizli ilişkisini gösterir. Müdürün ailesini ve namusunu korumak için cinayeti işlediğinin kanıtıdır.";
 
-            // ==========================================
-            // 4) KIRIK VİNÇ TELİ (Yolsuzlukta GERÇEK, Husumette SAHTE)
-            // ==========================================
             case "Kırık Vinç Teli":
                 sesDosyaAdi = "Dedektif_Delil_Tel";
                 gercekMi = (aktifRota == OyunRotasi.SirketYolsuzlugu);
-                return "Liflerde yıpranma yok. Ağzı spiral taşıyla, yani demir testeresiyle milimetrik olarak kesilmiş. Bu bir kaza değil, sabotaj.";
+                return "Liflerde yıpranma yok. Ağzı spiral taşıyla milimetrik olarak kesilmiş. Bu bir kaza değil, sabotaj.";
 
-            // ==========================================
-            // 5) SPİRAL TAŞLAMA MAKİNESİ (Yolsuzlukta GERÇEK, Husumette SAHTE)
-            // ==========================================
             case "Spiral Taşlama Makinesi":
                 sesDosyaAdi = "Dedektif_Sahte_Batarya"; 
                 gercekMi = (aktifRota == OyunRotasi.SirketYolsuzlugu);
                 return "Korkuluk demirlerinin vidalarını ve kaynaklarını aşındırmak için kullanılan atölyedeki cihaz.";
 
-            // ==========================================
-            // 6) ÇAMURLU LASTİK İZİ (Husumette GERÇEK, Yolsuzlukta SAHTE)
-            // ==========================================
             case "Çamurlu Lastik İzi":
                 sesDosyaAdi = "Dedektif_Sahte_Anahtar"; 
                 gercekMi = (aktifRota == OyunRotasi.KisiselHusumet);
                 return "Olay gecesi şantiyeye giren yabancı bir lüks araca aittir. Kemal Müdür'ün özel aracıyla birebir eşleşir.";
 
-            // ==========================================
-            // 7) KİRLENMİŞ BARET (Her iki rotada da SAHTE)
-            // ==========================================
             case "Kirlenmiş Baret":
                 sesDosyaAdi = "Dedektif_Sahte_Eldiven"; 
                 gercekMi = false;
                 return "Olay yerinin uzağında bulunan çamurlu baret. Dedektifi oyalayıp vakit kaybettirmek için bilerek oraya atılmıştır.";
 
-            // ==========================================
-            // 8) BOŞ İLAÇ ŞİŞESİ (Her iki rotada da SAHTE)
-            // ==========================================
             case "Boş İlaç Şişesi":
                 sesDosyaAdi = "Dedektif_Delil_Ilac"; 
                 gercekMi = false;
                 return "Revirden çalınmış boş sakinleştirici şişesi. Murat'ın intihar ettiği izlenimini uyandırmaya çalışan sahte bir kanıttır.";
+
+            case "Murat'ın Gizli Mektubu":
+                sesDosyaAdi = "Dedektif_Delil_Mektup";
+                gercekMi = true;
+                return "Murat'ın tehdit edildiğini ve başına bir şey gelirse delilleri sakladığını anlatan ıslak imzalı mektubu.";
+
+            case "Zimmet Kayıt Belgesi":
+                sesDosyaAdi = "Dedektif_Evrak_Bulundu_IcSes";
+                gercekMi = (aktifRota == OyunRotasi.SirketYolsuzlugu);
+                return "Şantiyedeki eksik malzemelerin ve zimmete geçirilen paraların resmi dokümanı.";
 
             default:
                 sesDosyaAdi = "";
@@ -130,6 +144,11 @@ public class DelilYoneticisi : MonoBehaviour
         bulunanDelilSayisi++; 
         DelilSayaciniGuncelle(); 
 
+        if (GorevYoneticisi.Instance != null)
+        {
+            GorevYoneticisi.Instance.DelilToplandi(delilAdi);
+        }
+
         string sesIsmi;
         bool gercekMi;
         string aciklama = DelilNotunuGetir(delilAdi, out sesIsmi, out gercekMi); 
@@ -140,16 +159,23 @@ public class DelilYoneticisi : MonoBehaviour
 
         if (dedektifSesKaynagi != null && !string.IsNullOrEmpty(sesIsmi))
         {
-            AudioClip icSes = Resources.Load<AudioClip>("Audio/Sounds/" + sesIsmi);
-            if (icSes != null)
+            try
             {
-                dedektifSesKaynagi.clip = icSes;
-                dedektifSesKaynagi.Play();
+                AudioClip icSes = Resources.Load<AudioClip>("Audio/Sounds/" + sesIsmi);
+                if (icSes != null)
+                {
+                    dedektifSesKaynagi.clip = icSes;
+                    dedektifSesKaynagi.Play();
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[DELİL SİSTEMİ] Ses yükleme uyarısı: {ex.Message}");
             }
         }
 
-        StopCoroutine("BildirimAnimasyon"); 
-        StartCoroutine(BildirimAnimasyon()); 
+        if (bildirimCoroutine != null) StopCoroutine(bildirimCoroutine);
+        bildirimCoroutine = StartCoroutine(BildirimAnimasyon()); 
     }
 
     IEnumerator BildirimAnimasyon() 
@@ -187,19 +213,38 @@ public class DelilYoneticisi : MonoBehaviour
         bildirimPanel.SetActive(false); 
     }
 
-    void DelilSayaciniGuncelle() 
+    public void DelilSayaciniGuncelle() 
     {
-        if (delilSayaciText != null)
-            delilSayaciText.text = bulunanDelilSayisi + "/" + toplamDelilSayisi + " Nesne Klasörde"; 
+        if (delilSayaciText == null) ReferanslariBul();
 
+        // 1. Ana HUD Delil Sayacı
+        if (delilSayaciText != null)
+        {
+            delilSayaciText.gameObject.SetActive(true); 
+            delilSayaciText.text = bulunanDelilSayisi + " / " + toplamDelilSayisi + " Nesne Klasörde"; 
+        }
+
+        // 2. Diyalog Panosundaki Delil Sayacı
         if (DiyalogYoneticisi.Instance != null && DiyalogYoneticisi.Instance.delilYazisiText != null)
         {
-            DiyalogYoneticisi.Instance.delilYazisiText.text = "Toplanan Delil: " + bulunanDelilSayisi + " / 8";
+            DiyalogYoneticisi.Instance.delilYazisiText.gameObject.SetActive(true);
+            DiyalogYoneticisi.Instance.delilYazisiText.text = "Toplanan Delil: " + bulunanDelilSayisi + " / " + toplamDelilSayisi;
         }
+    }
+
+    // --- "Tekrar Dene" Butonunda Delil Sayacını Tamamen Sıfırlamak İçin Eklendi ---
+    public void DelilSayaciniSifirla()
+    {
+        if (bildirimCoroutine != null) StopCoroutine(bildirimCoroutine);
+        if (bildirimPanel != null) bildirimPanel.SetActive(false);
+
+        bulunanDelilSayisi = 0;
+        aktifRota = OyunRotasi.Secilmedi;
+        DelilSayaciniGuncelle();
     }
 
     public void GorevTamamlandiPaneliAc() 
     {
-        // GorevYoneticisi.cs ile uyumluluk için içi boş bırakılmıştır.
+        // GorevYoneticisi.cs ile uyumluluk için korundu.
     }
 }
