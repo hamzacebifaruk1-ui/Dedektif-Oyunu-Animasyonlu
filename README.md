@@ -1,4 +1,3 @@
-# Dedektif-Oyunu-Animasyonlu
 <div align="center">
 
 # 🕵️‍♂️ DEDEKTİF OYUNU
@@ -21,7 +20,7 @@
 
 <br>
 
-<img src="docs/images/banner-liman.jpg" alt="Karadeniz Limanı — gece" width="100%">
+<img src="https://raw.githubusercontent.com/hamzacebifaruk1-ui/Dedektif-Oyunu-Animasyonlu/arena/019f961c-dedektif-oyunu-animasyonlu/docs/images/banner-liman.jpg" alt="Karadeniz Limanı — gece" width="100%">
 
 ---
 
@@ -33,8 +32,8 @@
 
 <table>
 <tr>
-<td width="50%"><img src="docs/images/olay-yeri.jpg" alt="Olay yeri" width="100%"></td>
-<td width="50%"><img src="docs/images/esinin-telefonu.jpg" alt="Murat'ın eşi" width="100%"></td>
+<td width="50%"><img src="https://raw.githubusercontent.com/hamzacebifaruk1-ui/Dedektif-Oyunu-Animasyonlu/arena/019f961c-dedektif-oyunu-animasyonlu/docs/images/olay-yeri.jpg" alt="Olay yeri" width="100%"></td>
+<td width="50%"><img src="https://raw.githubusercontent.com/hamzacebifaruk1-ui/Dedektif-Oyunu-Animasyonlu/arena/019f961c-dedektif-oyunu-animasyonlu/docs/images/esinin-telefonu.jpg" alt="Murat'ın eşi" width="100%"></td>
 </tr>
 <tr>
 <td align="center"><sub><i>3 Numaralı İskele — polis şeridi hâlâ duruyor</i></sub></td>
@@ -57,7 +56,7 @@
 > **Andın olsun ki, bu gece şantiyede gerçeği bulmak için tek bir şansın var.**
 
 <div align="center">
-<img src="docs/images/dedektif-masasi.jpg" alt="Dedektif ofisi" width="70%">
+<img src="https://raw.githubusercontent.com/hamzacebifaruk1-ui/Dedektif-Oyunu-Animasyonlu/arena/019f961c-dedektif-oyunu-animasyonlu/docs/images/dedektif-masasi.jpg" alt="Dedektif ofisi" width="70%">
 <br><sub><i>Dosya bu masada yeniden açıldı.</i></sub>
 </div>
 
@@ -157,16 +156,16 @@ Oyun **10 aşamalı** bir senaryo motoru (`GorevYoneticisi`) üzerinden ilerler:
 
 <table>
 <tr>
-<td width="50%"><img src="docs/images/konteyner-koridoru.jpg" alt="Konteyner koridoru" width="100%"></td>
-<td width="50%"><img src="docs/images/ofis-binasi.jpg" alt="Liman ofis binası" width="100%"></td>
+<td width="50%"><img src="https://raw.githubusercontent.com/hamzacebifaruk1-ui/Dedektif-Oyunu-Animasyonlu/arena/019f961c-dedektif-oyunu-animasyonlu/docs/images/konteyner-koridoru.jpg" alt="Konteyner koridoru" width="100%"></td>
+<td width="50%"><img src="https://raw.githubusercontent.com/hamzacebifaruk1-ui/Dedektif-Oyunu-Animasyonlu/arena/019f961c-dedektif-oyunu-animasyonlu/docs/images/ofis-binasi.jpg" alt="Liman ofis binası" width="100%"></td>
 </tr>
 <tr>
 <td align="center"><sub><i>Konteyner koridorları — deliller burada saklı</i></sub></td>
 <td align="center"><sub><i>Kemal'in ofisi hâlâ aydınlık</i></sub></td>
 </tr>
 <tr>
-<td width="50%"><img src="docs/images/dedektif-iskele.jpg" alt="Dedektif iskelede" width="100%"></td>
-<td width="50%"><img src="docs/images/liman-genel.jpg" alt="Liman genel görünüm" width="100%"></td>
+<td width="50%"><img src="https://raw.githubusercontent.com/hamzacebifaruk1-ui/Dedektif-Oyunu-Animasyonlu/arena/019f961c-dedektif-oyunu-animasyonlu/docs/images/dedektif-iskele.jpg" alt="Dedektif iskelede" width="100%"></td>
+<td width="50%"><img src="https://raw.githubusercontent.com/hamzacebifaruk1-ui/Dedektif-Oyunu-Animasyonlu/arena/019f961c-dedektif-oyunu-animasyonlu/docs/images/liman-genel.jpg" alt="Liman genel görünüm" width="100%"></td>
 </tr>
 <tr>
 <td align="center"><sub><i>Şehrin en karanlık gizemlerini çözen dedektif</i></sub></td>
@@ -391,7 +390,7 @@ Ambiyans kayıtları (liman gece atmosferi), fon müziği ve **ElevenLabs** ile 
 ## 🎭 Spoiler Bölgesi
 
 <div align="center">
-<img src="docs/images/final-gerilim.jpg" alt="Final" width="85%">
+<img src="https://raw.githubusercontent.com/hamzacebifaruk1-ui/Dedektif-Oyunu-Animasyonlu/arena/019f961c-dedektif-oyunu-animasyonlu/docs/images/final-gerilim.jpg" alt="Final" width="85%">
 <br><sub><i>Tek şans. Yanlış kişiyi suçlarsan her şey biter.</i></sub>
 </div>
 
