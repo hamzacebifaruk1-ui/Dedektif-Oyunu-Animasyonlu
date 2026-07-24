@@ -19,6 +19,10 @@
 
 *Sisli bir liman. Yalan söyleyen üç şüpheli. Sekiz delil — dördü sahte.*
 
+<br>
+
+<img src="docs/images/banner-liman.jpg" alt="Karadeniz Limanı — gece" width="100%">
+
 ---
 
 </div>
@@ -26,6 +30,17 @@
 <br>
 
 ## 📖 Hikâye
+
+<table>
+<tr>
+<td width="50%"><img src="docs/images/olay-yeri.jpg" alt="Olay yeri" width="100%"></td>
+<td width="50%"><img src="docs/images/esinin-telefonu.jpg" alt="Murat'ın eşi" width="100%"></td>
+</tr>
+<tr>
+<td align="center"><sub><i>3 Numaralı İskele — polis şeridi hâlâ duruyor</i></sub></td>
+<td align="center"><sub><i>Dosyayı yeniden açan telefon</i></sub></td>
+</tr>
+</table>
 
 > **14 Kasım. Gece 02:30.**
 > **Karadeniz Limanı — 3 Numaralı Yükleme İskelesi.**
@@ -40,6 +55,11 @@
 >
 > Sen bu şehrin en karanlık gizemlerini çözen dedektifsin.
 > **Andın olsun ki, bu gece şantiyede gerçeği bulmak için tek bir şansın var.**
+
+<div align="center">
+<img src="docs/images/dedektif-masasi.jpg" alt="Dedektif ofisi" width="70%">
+<br><sub><i>Dosya bu masada yeniden açıldı.</i></sub>
+</div>
 
 <br>
 
@@ -130,6 +150,29 @@ Oyun **10 aşamalı** bir senaryo motoru (`GorevYoneticisi`) üzerinden ilerler:
 ```
 
 > 💡 **İpucu sistemi:** Bir aşamada takılırsan, oyun belli bir süre sonra otomatik olarak ipucu metni gösterir.
+
+<br>
+
+## 🌃 Şantiyeden Kareler
+
+<table>
+<tr>
+<td width="50%"><img src="docs/images/konteyner-koridoru.jpg" alt="Konteyner koridoru" width="100%"></td>
+<td width="50%"><img src="docs/images/ofis-binasi.jpg" alt="Liman ofis binası" width="100%"></td>
+</tr>
+<tr>
+<td align="center"><sub><i>Konteyner koridorları — deliller burada saklı</i></sub></td>
+<td align="center"><sub><i>Kemal'in ofisi hâlâ aydınlık</i></sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/images/dedektif-iskele.jpg" alt="Dedektif iskelede" width="100%"></td>
+<td width="50%"><img src="docs/images/liman-genel.jpg" alt="Liman genel görünüm" width="100%"></td>
+</tr>
+<tr>
+<td align="center"><sub><i>Şehrin en karanlık gizemlerini çözen dedektif</i></sub></td>
+<td align="center"><sub><i>Karadeniz Limanı — gece vardiyası</i></sub></td>
+</tr>
+</table>
 
 <br>
 
@@ -346,6 +389,13 @@ Ambiyans kayıtları (liman gece atmosferi), fon müziği ve **ElevenLabs** ile 
 <br>
 
 ## 🎭 Spoiler Bölgesi
+
+<div align="center">
+<img src="docs/images/final-gerilim.jpg" alt="Final" width="85%">
+<br><sub><i>Tek şans. Yanlış kişiyi suçlarsan her şey biter.</i></sub>
+</div>
+
+<br>
 
 <details>
 <summary><b>⚠️ Katilin kim olduğunu öğrenmek için tıkla</b></summary>
