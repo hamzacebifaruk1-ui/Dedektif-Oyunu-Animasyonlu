@@ -176,7 +176,7 @@ public class GorevYoneticisi : MonoBehaviour
                 break;
 
             case GorevAsamasi.RizaSorgu:
-                guncelMetin = "<color=white>GÖREV: Güvenlik Rıza ile konuş ve ilk ifadesini al (MAP kulanabilirsin (M tuşu ile aç).</color>"; 
+               guncelMetin = "<color=white>GÖREV: Güvenlik Rıza ile konuş ve ilk ifadesini al (<color=#8B4513>Harita</color> kullanabilirsin (M tuşu ile aç)).</color>";
                 guncelIpucu = "İpucu: Haritadan güvenlik kulübesinin yerini bularak oraya yönel."; 
                 break;
 
@@ -208,7 +208,7 @@ public class GorevYoneticisi : MonoBehaviour
             case GorevAsamasi.KalanDelilleriTopla:
                 guncelMetin = $"<color=purple>GÖREV: Şantiyedeki gizli ipucunu ve kalan delilleri topla ({toplananSonAramaDelilleri}/4).</color>"; 
                 // ✨ SOKAK LAMBALARI VE DÜŞÜNCE BİLGİSİ EKLENDİ
-                guncelIpucu = "Düşünce: Sokak lambalarına dikkat et; ışıkları yanıp sönerek kalan gizli delillere giden yolu gösteriyor."; 
+                guncelIpucu = "Düşünce: Sokak lambalarına dikkat et; ışıkları yanıp sönerek kalan gizli delillere giden yolu gösteriyor(vinç!)."; 
                 break;
 
             case GorevAsamasi.DelilTasnifPanosu:
